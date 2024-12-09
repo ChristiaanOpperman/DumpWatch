@@ -19,8 +19,8 @@ CREATE TABLE
     );
 
 CREATE TABLE
-    PostReport (
-        PostId VARCHAR(36) PRIMARY KEY DEFAULT(UUID()),
+    Report (
+        ReportId VARCHAR(36) PRIMARY KEY DEFAULT(UUID()),
         CreatedById VARCHAR(36) NOT NULL,
         CreatedDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         LastModifiedById VARCHAR(36),

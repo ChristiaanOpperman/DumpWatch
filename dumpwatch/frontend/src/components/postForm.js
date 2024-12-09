@@ -22,7 +22,7 @@ const PostForm = () => {
         formData.append('image', image, image.name);
 
         try {
-            const response = await axios.post('/posts', formData, {
+            const response = await axios.post('/create-report', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },

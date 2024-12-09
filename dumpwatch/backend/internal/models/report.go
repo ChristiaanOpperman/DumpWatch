@@ -1,6 +1,6 @@
 package models
 
-type PostReport struct {
+type Report struct {
 	PostId           string
 	CreatedById      string
 	CreatedDate      string
