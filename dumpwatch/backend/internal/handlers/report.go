@@ -74,7 +74,7 @@ func CreateReport(w http.ResponseWriter, r *http.Request) {
 func GetAllReports(w http.ResponseWriter, r *http.Request) {
 	// Query the database to fetch all posts
 	rows, err := config.DB.Query(`
-		SELECT PostId, CreatedById, CreatedDate, LastModifiedById, LastModifiedDate, Description, Latitude, Longitude, ImageURL
+		SELECT ReportId, CreatedById, CreatedDate, LastModifiedById, LastModifiedDate, Description, Latitude, Longitude, ImageURL
 		FROM Report
 	`)
 	if err != nil {
