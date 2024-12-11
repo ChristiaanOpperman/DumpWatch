@@ -1,12 +1,14 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 )
 
 func RegisterRoutes(mux *http.ServeMux) {
 	// Create Post Route
 	mux.HandleFunc("/create-report", func(w http.ResponseWriter, r *http.Request) {
+		log.Println("POST /create-report")
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusOK)
 			return
@@ -16,6 +18,7 @@ func RegisterRoutes(mux *http.ServeMux) {
 
 	// Get Posts Route
 	mux.HandleFunc("/get-reports", func(w http.ResponseWriter, r *http.Request) {
+		log.Println("GET /get-reports")
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusOK)
 			return

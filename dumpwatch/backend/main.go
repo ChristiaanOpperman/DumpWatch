@@ -40,5 +40,8 @@ func main() {
 
 	// 5. Start the server
 	log.Println("Starting server on port 8080...")
-	http.ListenAndServe(":8080", enableCORS(mux))
+	log.Println("Starting server on port 8080...")
+	if err := http.ListenAndServe(":8080", enableCORS(mux)); err != nil {
+		log.Fatalf("Server failed to start: %v", err)
+	}
 }

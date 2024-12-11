@@ -1,10 +1,9 @@
 package models
 
 type Report struct {
-	PostId           string
+	ReportId         string
 	CreatedById      string
 	CreatedDate      string
-	LastModifiedById string
 	LastModifiedDate string
 	Description      string
 	Latitude         float64

@@ -62,7 +62,7 @@ func CreateReport(w http.ResponseWriter, r *http.Request) {
 	query := `INSERT INTO Report (CreatedById, Description, Latitude, Longitude, ImageURL) VALUES (?, ?, ?, ?, ?)`
 	_, err = config.DB.Exec(query, userId, description, latitude, longitude, filePath)
 	if err != nil {
-		log.Printf("Database insert error: %v", err)
+		log.Printf("Database insert report error: %v", err)
 		http.Error(w, "Failed to save post", http.StatusInternalServerError)
 		return
 	}
@@ -72,12 +72,20 @@ func CreateReport(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetAllReports(w http.ResponseWriter, r *http.Request) {
+	// Check if DB connection is not nil
+	if config.DB == nil {
+		log.Println("Database connection is nil")
+		http.Error(w, "Database connection error", http.StatusInternalServerError)
+		return
+	}
+
 	// Query the database to fetch all posts
 	rows, err := config.DB.Query(`
-		SELECT ReportId, CreatedById, CreatedDate, LastModifiedById, LastModifiedDate, Description, Latitude, Longitude, ImageURL
-		FROM Report
+		SELECT ReportId, CreatedById, CreatedDate, LastModifiedDate, Description, Latitude, Longitude, ImageURL
+		FROM Report;
 	`)
 	if err != nil {
+		log.Printf("Database get report error: %v", err)
 		http.Error(w, "Failed to fetch posts", http.StatusInternalServerError)
 		return
 	}
@@ -90,10 +98,9 @@ func GetAllReports(w http.ResponseWriter, r *http.Request) {
 	for rows.Next() {
 		var post models.Report
 		err := rows.Scan(
-			&post.PostId,
+			&post.ReportId,
 			&post.CreatedById,
 			&post.CreatedDate,
-			&post.LastModifiedById,
 			&post.LastModifiedDate,
 			&post.Description,
 			&post.Latitude,
@@ -101,13 +108,29 @@ func GetAllReports(w http.ResponseWriter, r *http.Request) {
 			&post.ImageURL,
 		)
 		if err != nil {
+			log.Printf("Error scanning row: %v", err)
 			http.Error(w, "Failed to parse posts", http.StatusInternalServerError)
 			return
 		}
 		posts = append(posts, post)
 	}
 
+	// Check for row iteration errors
+	if err = rows.Err(); err != nil {
+		log.Printf("Rows iteration error: %v", err)
+		http.Error(w, "Failed to parse posts", http.StatusInternalServerError)
+		return
+	}
+
+	// Log if no posts are found
+	if len(posts) == 0 {
+		log.Println("No reports found")
+	}
+
 	// Convert the slice to JSON and send it in the response
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(posts)
+	if err := json.NewEncoder(w).Encode(posts); err != nil {
+		log.Printf("Failed to encode JSON: %v", err)
+		http.Error(w, "Failed to encode posts", http.StatusInternalServerError)
+	}
 }
