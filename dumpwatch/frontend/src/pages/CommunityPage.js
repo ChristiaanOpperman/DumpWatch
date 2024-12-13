@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../api/api';
 import Layout from '../components/Layout';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 
 const CommunityPage = () => {
     const [reports, setReports] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showImages, setShowImages] = useState(false); // State to toggle image visibility
+    const navigate = useNavigate(); // Initialize navigate function
 
     const fetchReports = async () => {
         try {
@@ -49,10 +51,10 @@ const CommunityPage = () => {
         <Layout pageTitle="Community">
             <div className="bg-gray-200 p-6">
                 <h1 className="text-center text-[#535A46] font-bold text-2xl mb-6">Community Reports</h1>
-                
+
                 <div className="flex justify-center mb-4">
-                    <button 
-                        onClick={() => setShowImages(!showImages)} 
+                    <button
+                        onClick={() => setShowImages(!showImages)}
                         className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
                     >
                         {showImages ? 'Hide Images' : 'Show Images'}
@@ -61,10 +63,14 @@ const CommunityPage = () => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     {reports.map((report) => (
-                        <div key={report.ReportId} className="bg-white rounded-lg shadow-md overflow-hidden">
+                        <div
+                            key={report.ReportId}
+                            className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transform transition-transform hover:scale-105"
+                            onClick={() => navigate(`/community/${report.ReportId}`)} // Navigate to the report's page
+                        >
                             {showImages && (
                                 <img
-                                    src={`http://localhost:8080/${report.ImageURL}`} 
+                                    src={`http://localhost:8080/${report.ImageURL}`}
                                     alt="Posted Illegal Dump"
                                     className="w-full h-48 object-cover"
                                 />

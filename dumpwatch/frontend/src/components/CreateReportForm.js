@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from '../api/api';
 import imageCompression from 'browser-image-compression';
 
-const PostForm = () => {
+const CreateReportForm = () => {
     const [description, setDescription] = useState('');
     const [latitude, setLatitude] = useState('');
     const [longitude, setLongitude] = useState('');
@@ -93,18 +93,6 @@ const PostForm = () => {
                     {message}
                 </p>
             )}
-
-            {/* Description Field */}
-            <div>
-                <label className="block font-bold mb-1">Description:</label>
-                <textarea
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg p-2"
-                    required
-                ></textarea>
-            </div>
-
             <div className="flex items-center justify-center">
                 <input
                     type="checkbox"
@@ -191,7 +179,6 @@ const PostForm = () => {
                 </>
             )
             }
-
             {/* Image Upload Field */}
             <div>
                 <label className="block font-bold mb-1">Image:</label>
@@ -203,6 +190,16 @@ const PostForm = () => {
                     required
                 />
             </div>
+            <div>
+                <label className="block font-bold mb-1">Description:</label>
+                <textarea
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg p-2"
+                    required
+                ></textarea>
+            </div>
+            
 
             {/* Submit Button */}
             <button type="submit" className="bg-green-700 text-white px-6 py-2 rounded-lg hover:bg-green-800">
@@ -212,4 +209,4 @@ const PostForm = () => {
     );
 };
 
-export default PostForm;
+export default CreateReportForm;

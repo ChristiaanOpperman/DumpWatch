@@ -437,7 +437,7 @@ FinalProject
       │  ├─ components
       │  │  ├─ CommunityPage.js
       │  │  ├─ Layout.js
-      │  │  └─ PostForm.js
+      │  │  └─ CreateReportForm.js
       │  ├─ index.css
       │  ├─ index.js
       │  ├─ logo.svg
