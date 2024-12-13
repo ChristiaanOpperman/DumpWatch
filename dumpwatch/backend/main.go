@@ -5,6 +5,7 @@ import (
 	"dumpwatch/internal/handlers"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/joho/godotenv"
 )
@@ -38,8 +39,19 @@ func main() {
 	// 4. Register the routes (imported from handlers/routes.go)
 	handlers.RegisterRoutes(mux)
 
+	/// 4.5 Use the local file system to serve files
+	localUploadsPath := "./uploads" // <-- Change this path to the folder on your local machine
+	if _, err := os.Stat(localUploadsPath); 
+	os.IsNotExist(err) {
+		log.Fatalf("The specified path does not exist: %s", localUploadsPath)
+	}
+
+	log.Printf("Serving files from local path: %s", localUploadsPath)
+
+	// 4.6 Serve the static files directly from the local file system
+	mux.Handle("/uploads/", http.StripPrefix("/uploads/", http.FileServer(http.Dir(localUploadsPath))))
+
 	// 5. Start the server
-	log.Println("Starting server on port 8080...")
 	log.Println("Starting server on port 8080...")
 	if err := http.ListenAndServe(":8080", enableCORS(mux)); err != nil {
 		log.Fatalf("Server failed to start: %v", err)

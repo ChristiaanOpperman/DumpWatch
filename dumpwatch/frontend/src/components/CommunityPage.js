@@ -6,6 +6,7 @@ const CommunityPage = () => {
     const [reports, setReports] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [showImages, setShowImages] = useState(false); // State to toggle image visibility
 
     const fetchReports = async () => {
         try {
@@ -20,9 +21,7 @@ const CommunityPage = () => {
         }
     };
 
-
     useEffect(() => {
-        
         fetchReports();
     }, []);
 
@@ -48,39 +47,43 @@ const CommunityPage = () => {
 
     return (
         <Layout pageTitle="Community">
-            <main className="container mx-auto p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-[#C8D9A9] min-h-screen">
-                {reports.length === 0 ? (
-                    <div className="col-span-full text-center text-[#535A46] font-bold">
-                        No reports found
-                    </div>
-                ) : (
-                    reports.map(report => (
-                        <div 
-                            key={report.ReportId} 
-                            className="bg-[#B1D968] p-4 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105"
-                        >
-                            {report.image && (
-                                <img 
-                                    src={report.image} 
-                                    alt="Report" 
-                                    className="w-full h-48 object-cover rounded-md mb-4 border-4 border-[#83A04D]"
+            <div className="bg-gray-200 p-6">
+                <h1 className="text-center text-[#535A46] font-bold text-2xl mb-6">Community Reports</h1>
+                
+                <div className="flex justify-center mb-4">
+                    <button 
+                        onClick={() => setShowImages(!showImages)} 
+                        className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                    >
+                        {showImages ? 'Hide Images' : 'Show Images'}
+                    </button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    {reports.map((report) => (
+                        <div key={report.ReportId} className="bg-white rounded-lg shadow-md overflow-hidden">
+                            {showImages && (
+                                <img
+                                    src={`http://localhost:8080/${report.ImageURL}`} 
+                                    alt="Posted Illegal Dump"
+                                    className="w-full h-48 object-cover"
                                 />
                             )}
-                            <div className="text-[#535A46]">
-                                <h2 className="text-lg font-bold mb-2">{report.Description}</h2>
-                                <div className="text-sm">
-                                    <p className="mb-1">
-                                        <span className="font-semibold">Latitude:</span> {report.Latitude}
-                                    </p>
-                                    <p>
-                                        <span className="font-semibold">Longitude:</span> {report.Longitude}
-                                    </p>
-                                </div>
+                            <div className="p-4">
+                                <p className="text-sm text-gray-600 mb-2">
+                                    Created on: {new Date(report.CreatedDate).toLocaleDateString()}
+                                </p>
+                                <p className="text-gray-800 font-bold mb-2">
+                                    Description: {report.Description}
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                    Latitude: {report.Latitude}, Longitude: {report.Longitude}
+                                </p>
                             </div>
                         </div>
-                    ))
-                )}
-            </main>
+                    ))}
+                </div>
+            </div>
         </Layout>
     );
 };

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+// Import necessary modules
+import React, { useState, useEffect } from 'react';
 import axios from '../api/api';
 import imageCompression from 'browser-image-compression';
 
@@ -8,8 +9,34 @@ const PostForm = () => {
     const [longitude, setLongitude] = useState('');
     const [image, setImage] = useState(null);
     const [message, setMessage] = useState('');
+    const [useCurrentLocation, setUseCurrentLocation] = useState(true); // For toggle switch
+    const [address, setAddress] = useState(''); // For manual location entry
+    const [province, setProvince] = useState(''); // For manual province entry
 
     const userId = '85e50cfa-b63b-11ef-bb4c-f8e9a5819770';
+
+    // Request user's location when the component mounts
+    useEffect(() => {
+        if (useCurrentLocation) fetchUserLocation();
+    }, [useCurrentLocation]);
+
+    const fetchUserLocation = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    setLatitude(position.coords.latitude.toString());
+                    setLongitude(position.coords.longitude.toString());
+                },
+                (error) => {
+                    console.error('Error getting location:', error);
+                    setMessage('Unable to retrieve your location. Please enter it manually.');
+                }
+            );
+        } else {
+            console.error('Geolocation is not supported by this browser.');
+            setMessage('Geolocation is not supported by your browser.');
+        }
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -19,7 +46,9 @@ const PostForm = () => {
         formData.append('description', description);
         formData.append('latitude', latitude);
         formData.append('longitude', longitude);
-        formData.append('image', image, image.name);
+        if (image) formData.append('image', image, image.name);
+        formData.append('address', address);
+        formData.append('province', province);
 
         try {
             const response = await axios.post('/create-report', formData, {
@@ -42,9 +71,9 @@ const PostForm = () => {
 
         try {
             const options = {
-                maxSizeMB: 10, // The max file size you want the file to be
-                maxWidthOrHeight: 1920, // The max width or height of the image
-                useWebWorker: true // Use web worker for performance
+                maxSizeMB: 10,
+                maxWidthOrHeight: 1920,
+                useWebWorker: true
             };
 
             const compressedFile = await imageCompression(file, options);
@@ -76,29 +105,92 @@ const PostForm = () => {
                 ></textarea>
             </div>
 
-            {/* Latitude Field */}
-            <div>
-                <label className="block font-bold mb-1">Latitude:</label>
+            <div className="flex items-center justify-center">
                 <input
-                    type="text"
-                    value={latitude}
-                    onChange={(e) => setLatitude(e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg p-2"
-                    required
+                    type="checkbox"
+                    id="locationSwitch"
+                    checked={useCurrentLocation}
+                    onChange={() => setUseCurrentLocation(!useCurrentLocation)}
+                    className="mr-2 mt-[0.3rem] h-3.5 w-8 appearance-none rounded-[0.4375rem] bg-neutral-300 before:pointer-events-none before:absolute before:h-3.5 before:w-3.5 before:rounded-full before:bg-transparent before:content-[''] after:absolute after:z-[2] after:-mt-[0.1875rem] after:h-5 after:w-5 after:rounded-full after:border-none after:bg-neutral-100 after:shadow-[0_0px_3px_0_rgb(0_0_0_/_7%),_0_2px_2px_0_rgb(0_0_0_/_4%)] after:transition-[background-color_0.2s,transform_0.2s] after:content-[''] checked:bg-green-700 checked:after:absolute checked:after:z-[2] checked:after:-mt-[3px] checked:after:ml-[1.0625rem] checked:after:h-5 checked:after:w-5 checked:after:rounded-full checked:after:border-none checked:after:bg-green-700 checked:after:shadow-[0_3px_1px_-2px_rgba(0,0,0,0.2),_0_2px_2px_0_rgba(0,0,0,0.14),_0_1px_5px_0_rgba(0,0,0,0.12)] checked:after:transition-[background-color_0.2s,transform_0.2s] checked:after:content-[''] hover:cursor-pointer focus:outline-none focus:ring-0 focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[3px_-1px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-5 focus:after:w-5 focus:after:rounded-full focus:after:content-[''] checked:focus:border-green-700 checked:focus:bg-green-700 checked:focus:before:ml-[1.0625rem] checked:focus:before:scale-100 checked:focus:before:shadow-[3px_-1px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] dark:bg-neutral-600 dark:after:bg-neutral-400 dark:checked:bg-green-700 dark:checked:after:bg-green-700 dark:focus:before:shadow-[3px_-1px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[3px_-1px_0px_13px_#3b71ca]"
                 />
+                <label
+                    htmlFor="locationSwitch"
+                    className="inline-block pl-[0.15rem] hover:cursor-pointer text-sm font-medium text-gray-900"
+                >
+                    {useCurrentLocation ? 'Use Current Location' : 'Manually Enter Address'}
+                </label>
             </div>
 
-            {/* Longitude Field */}
-            <div>
-                <label className="block font-bold mb-1">Longitude:</label>
-                <input
-                    type="text"
-                    value={longitude}
-                    onChange={(e) => setLongitude(e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg p-2"
-                    required
-                />
-            </div>
+
+
+
+            {/* Conditionally Render Fields Based on Location Mode */}
+            {useCurrentLocation ? (
+                <>
+
+
+                    {/* Latitude Field */}
+                    <div>
+                        <label className="block font-bold mb-1">Latitude:</label>
+                        <input
+                            type="text"
+                            value={latitude}
+                            onChange={(e) => setLatitude(e.target.value)}
+                            className="w-full border border-gray-300 rounded-lg p-2"
+                            readOnly
+                        />
+                    </div>
+
+                    {/* Longitude Field */}
+                    <div>
+                        <label className="block font-bold mb-1">Longitude:</label>
+                        <input
+                            type="text"
+                            value={longitude}
+                            onChange={(e) => setLongitude(e.target.value)}
+                            className="w-full border border-gray-300 rounded-lg p-2"
+                            readOnly
+                        />
+                    </div>
+                    <button
+                        type="button"
+                        onClick={fetchUserLocation}
+                        className="flex items-center justify-center bg-[#535A46] text-white px-4 py-2 rounded-lg hover:bg-[#4b523f]"
+                    >
+                        Refresh Location
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4 ml-2">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                        </svg>
+                    </button>
+                </>
+            ) : (
+                <>
+                    {/* Address Field */}
+                    <div>
+                        <label className="block font-bold mb-1">Street Address:</label>
+                        <input
+                            type="text"
+                            value={address}
+                            onChange={(e) => setAddress(e.target.value)}
+                            className="w-full border border-gray-300 rounded-lg p-2"
+                            required={!useCurrentLocation}
+                        />
+                    </div>
+
+                    {/* Province Field */}
+                    <div>
+                        <label className="block font-bold mb-1">Province:</label>
+                        <input
+                            type="text"
+                            value={province}
+                            onChange={(e) => setProvince(e.target.value)}
+                            className="w-full border border-gray-300 rounded-lg p-2"
+                            required={!useCurrentLocation}
+                        />
+                    </div>
+                </>
+            )
+            }
 
             {/* Image Upload Field */}
             <div>
@@ -116,7 +208,7 @@ const PostForm = () => {
             <button type="submit" className="bg-green-700 text-white px-6 py-2 rounded-lg hover:bg-green-800">
                 Upload Post
             </button>
-        </form>
+        </form >
     );
 };
 
