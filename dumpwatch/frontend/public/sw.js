@@ -1,12 +1,11 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable no-restricted-globals */
-// Set a cache name
 const CACHE_NAME = 'dumpwatch-cache-v1';
 
-// List of files to cache
 const FILES_TO_CACHE = [
     '/',
     '/index.html',
-    '/offline.html', // Add offline page here
+    '/offline.html',
     '/static/js/bundle.js',
     '/static/js/0.chunk.js',
     '/static/js/main.chunk.js',
@@ -14,6 +13,8 @@ const FILES_TO_CACHE = [
     '/manifest.json',
     '/favicon.ico',
 ];
+
+
 // Install event - cache assets
 self.addEventListener('install', (event) => {
     event.waitUntil(
@@ -25,171 +26,92 @@ self.addEventListener('install', (event) => {
     self.skipWaiting();
 });
 
-
-// 5️⃣ Offline Fallback Page
-
-self.addEventListener('fetch', (event) => {
-    if (event.request.method !== 'GET') return;
-
-    event.respondWith(
-        fetch(event.request).catch(() => {
-            console.log('[Service Worker] Serving offline page');
-            return caches.match('/offline.html');
-        })
-    );
-});
-
-// 6️⃣ Cache Versioning
+// Activate event - remove old caches
 self.addEventListener('activate', (event) => {
     event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
+        caches.keys().then((cacheNames) => 
+            Promise.all(
                 cacheNames.map((cacheName) => {
                     if (cacheName !== CACHE_NAME) {
                         console.log('[Service Worker] Deleting old cache:', cacheName);
                         return caches.delete(cacheName);
                     }
                 })
-            );
-        })
+            )
+        )
     );
     self.clients.claim();
 });
 
-
-// Fetch event - serve cached content when offline
-self.addEventListener('fetch', (event) => {
-    if (event.request.method !== 'GET') return;
-
-    event.respondWith(
-        caches.match(event.request).then((response) => {
-            if (response) {
-                console.log('[Service Worker] Serving from cache:', event.request.url);
-                return response;
-            }
-
-            console.log('[Service Worker] Fetching from network:', event.request.url);
-            return fetch(event.request).then((networkResponse) => {
-                if (!networkResponse || networkResponse.status !== 200) {
-                    return networkResponse;
-                }
-
-                return caches.open(CACHE_NAME).then((cache) => {
-                    cache.put(event.request, networkResponse.clone());
-                    return networkResponse;
-                });
-            });
-        })
-    );
-});
-
-// 1️⃣ Dynamic Caching for API Requests
+// Unified fetch event - handles static files, images, and API requests
 self.addEventListener('fetch', (event) => {
     if (event.request.method !== 'GET') return;
 
     const url = new URL(event.request.url);
 
-    // Cache API requests like `/get-reports` and `/get-comments-by-reportId/:id`
-    if (url.pathname.startsWith('/get-reports') || url.pathname.startsWith('/get-comments-by-reportId')) {
-        event.respondWith(
-            caches.open(CACHE_NAME).then((cache) => {
-                return fetch(event.request)
-                    .then((response) => {
-                        if (response && response.status === 200) {
-                            cache.put(event.request, response.clone());
-                        }
-                        return response;
-                    })
-                    .catch(() => {
-                        console.log('[Service Worker] Serving API from cache:', event.request.url);
-                        return caches.match(event.request);
-                    });
-            })
-        );
-        return;
-    }
-
-    // Serve static files from cache (this already exists in your code)
     event.respondWith(
-        caches.match(event.request).then((response) => {
-            if (response) {
+        caches.match(event.request).then((cachedResponse) => {
+            if (cachedResponse) {
                 console.log('[Service Worker] Serving from cache:', event.request.url);
-                return response;
+                return cachedResponse;
             }
 
-            console.log('[Service Worker] Fetching from network:', event.request.url);
             return fetch(event.request).then((networkResponse) => {
                 if (!networkResponse || networkResponse.status !== 200) {
-                    return networkResponse;
+                    console.log('[Service Worker] Fetch failed, serving offline page');
+                    return caches.match('/offline.html');
                 }
 
                 return caches.open(CACHE_NAME).then((cache) => {
-                    cache.put(event.request, networkResponse.clone());
-                    return networkResponse;
-                });
-            });
-        })
-    );
-});
-
-// 2️⃣ Cache Images Dynamically
-self.addEventListener('fetch', (event) => {
-    if (event.request.method !== 'GET') return;
-
-    const url = new URL(event.request.url);
-
-    // Cache images from /uploads/ folder
-    if (url.pathname.startsWith('/uploads/')) {
-        event.respondWith(
-            caches.open(CACHE_NAME).then((cache) => {
-                return cache.match(event.request).then((cachedResponse) => {
-                    if (cachedResponse) {
-                        console.log('[Service Worker] Serving cached image:', event.request.url);
-                        return cachedResponse;
+                    if (url.pathname.startsWith('/uploads/') || url.pathname.startsWith('/get-reports') || url.pathname.startsWith('/get-comments-by-reportId')) {
+                        cache.put(event.request, networkResponse.clone());
                     }
-
-                    return fetch(event.request).then((networkResponse) => {
-                        if (networkResponse && networkResponse.status === 200) {
-                            cache.put(event.request, networkResponse.clone());
-                        }
-                        return networkResponse;
-                    });
+                    return networkResponse;
                 });
-            })
-        );
-        return;
-    }
+            }).catch(() => caches.match('/offline.html'));
+        })
+    );
 });
 
-
-// 3️⃣ Background Sync for Pending Uploads
+// Background sync for pending uploads
 self.addEventListener('sync', (event) => {
-    if (event.tag === 'sync-uploads') {
-        event.waitUntil(
-            caches.open(CACHE_NAME).then(async (cache) => {
-                const requests = await cache.keys();
-                requests.forEach(async (request) => {
-                    if (request.url.includes('/create-report')) {
-                        const response = await cache.match(request);
-                        if (response) {
-                            fetch(request, {
-                                method: 'POST',
-                                body: await response.blob()
-                            }).then(() => {
-                                console.log('[Service Worker] Report uploaded successfully.');
-                                cache.delete(request);
-                            }).catch((err) => {
-                                console.error('[Service Worker] Failed to re-upload report:', err);
-                            });
-                        }
-                    }
-                });
-            })
-        );
-    }
+    // if (event.tag === 'sync-uploads') {
+    //     event.waitUntil(
+    //         (async () => {
+    //             const db = await openDB('dumpwatchDB', 'pendingReports');
+    //             const tx = db.transaction('pendingReports', 'readonly');
+    //             const store = tx.objectStore('pendingReports');
+    //             const pendingReports = await store.getAll();
+
+    //             for (const report of pendingReports) {
+    //                 try {
+    //                     const formData = new FormData();
+    //                     for (const key in report.body) {
+    //                         formData.append(key, report.body[key]);
+    //                     }
+
+    //                     const response = await fetch(report.url, {
+    //                         method: report.method,
+    //                         body: formData,
+    //                     });
+
+    //                     if (response.ok) {
+    //                         const tx = db.transaction('pendingReports', 'readwrite');
+    //                         const store = tx.objectStore('pendingReports');
+    //                         store.delete(report.id);
+    //                         console.log('[Service Worker] Report uploaded and removed from queue.');
+    //                     }
+    //                 } catch (err) {
+    //                     console.error('[Service Worker] Upload failed, will retry.', err);
+    //                 }
+    //             }
+    //         })()
+    //     );
+    // }
 });
 
-// 4️⃣ Push Notifications
+
+// Push notification event
 self.addEventListener('push', (event) => {
     const data = event.data ? event.data.json() : {};
     const title = data.title || 'New Notification';
@@ -204,6 +126,7 @@ self.addEventListener('push', (event) => {
     );
 });
 
+// Alert user when a new service worker is activated
 self.addEventListener('controllerchange', () => {
     alert('New version of the app is available. Please refresh the page.');
 });

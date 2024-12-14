@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../api/api';
 import imageCompression from 'browser-image-compression';
+import { addToDB, getAllFromDB, deleteFromDB, updateDBItemStatus } from '../helpers/indexedDB'; // Import IndexedDB helpers
 
 const CreateReportForm = () => {
     const [description, setDescription] = useState('');
@@ -18,6 +19,7 @@ const CreateReportForm = () => {
     // Request user's location when the component mounts
     useEffect(() => {
         if (useCurrentLocation) fetchUserLocation();
+        handlePendingUploads(); // Try to upload pending reports when user comes online
     }, [useCurrentLocation]);
 
     const fetchUserLocation = () => {
@@ -50,20 +52,74 @@ const CreateReportForm = () => {
         formData.append('address', address);
         formData.append('province', province);
 
-        try {
-            const response = await axios.post('/create-report', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
+        if (!navigator.onLine) {
+            // 🚫 User is offline — Save the form data to IndexedDB
+            try {
+                const formDataObject = {};
+                formData.forEach((value, key) => {
+                    formDataObject[key] = value;
+                });
 
-            setMessage('Post uploaded successfully!');
-        } catch (error) {
-            console.error('Full error:', error);
-            console.error('Error response:', error.response);
-            setMessage(error.response?.data || 'Failed to upload post. Please try again.');
+                await addToDB('dumpwatchDB', 'pendingReports', {
+                    url: '/create-report',
+                    method: 'POST',
+                    body: formDataObject,
+                });
+
+                setMessage('You are offline. Report saved and will be uploaded when you are back online.');
+            } catch (error) {
+                console.error('[CreateReportForm] Error saving report for offline sync:', error);
+                setMessage('Failed to save the report for offline upload.');
+            }
+        } else {
+            // 🌐 User is online — Upload the form directly
+            try {
+                const response = await axios.post('/create-report', formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                });
+                setMessage('Post uploaded successfully!');
+            } catch (error) {
+                console.error('Full error:', error);
+                setMessage(error.response?.data || 'Failed to upload post. Please try again.');
+            }
         }
     };
+
+    const handlePendingUploads = async () => {
+        if (!navigator.onLine) return;
+    
+        try {
+            const pendingReports = await getAllFromDB('dumpwatchDB', 'pendingReports');
+    
+            for (const report of pendingReports) {
+                if (report.status === 'pending') {
+                    const formData = new FormData();
+                    for (const key in report.body) {
+                        formData.append(key, report.body[key]);
+                    }
+    
+                    try {
+                        const response = await axios.post(report.url, formData, {
+                            headers: { 'Content-Type': 'multipart/form-data' },
+                        });
+    
+                        // Update the status to 'synced'
+                        await updateDBItemStatus('dumpwatchDB', 'pendingReports', report.id, 'synced');
+                        await deleteFromDB('dumpwatchDB', 'pendingReports', report.id);
+                        
+                        console.log('[CreateReportForm] Successfully uploaded pending report:', report);
+                    } catch (error) {
+                        console.error('[CreateReportForm] Failed to upload report:', report, error);
+                        // Optionally, you could update the status to 'failed' instead of deleting
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('[CreateReportForm] Error handling pending uploads:', error);
+        }
+    };
+    
+
 
     const handleFileChange = async (event) => {
         const file = event.target.files[0];
@@ -110,13 +166,9 @@ const CreateReportForm = () => {
             </div>
 
 
-
-
             {/* Conditionally Render Fields Based on Location Mode */}
             {useCurrentLocation ? (
                 <>
-
-
                     {/* Latitude Field */}
                     <div>
                         <label className="block font-bold mb-1">Latitude:</label>
@@ -126,6 +178,7 @@ const CreateReportForm = () => {
                             onChange={(e) => setLatitude(e.target.value)}
                             className="w-full border border-gray-300 rounded-lg p-2"
                             readOnly
+                            aria-label="Latitude"
                         />
                     </div>
 
@@ -138,9 +191,11 @@ const CreateReportForm = () => {
                             onChange={(e) => setLongitude(e.target.value)}
                             className="w-full border border-gray-300 rounded-lg p-2"
                             readOnly
+                            aria-label="Longitude"
                         />
                     </div>
                     <button
+                        aria-label="Fetch Location"
                         type="button"
                         onClick={fetchUserLocation}
                         className="flex items-center justify-center bg-[#535A46] text-white px-4 py-2 rounded-lg hover:bg-[#4b523f]"
@@ -157,6 +212,7 @@ const CreateReportForm = () => {
                     <div>
                         <label className="block font-bold mb-1">Street Address:</label>
                         <input
+                            aria-label="Address"
                             type="text"
                             value={address}
                             onChange={(e) => setAddress(e.target.value)}
@@ -169,6 +225,7 @@ const CreateReportForm = () => {
                     <div>
                         <label className="block font-bold mb-1">Province:</label>
                         <input
+                            aria-label="Province"
                             type="text"
                             value={province}
                             onChange={(e) => setProvince(e.target.value)}
@@ -183,6 +240,7 @@ const CreateReportForm = () => {
             <div>
                 <label className="block font-bold mb-1">Image:</label>
                 <input
+                    aria-label="Report Image"
                     type="file"
                     accept="image/*"
                     onChange={handleFileChange}
@@ -193,13 +251,14 @@ const CreateReportForm = () => {
             <div>
                 <label className="block font-bold mb-1">Description:</label>
                 <textarea
+                    aria-label="Description"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     className="w-full border border-gray-300 rounded-lg p-2"
                     required
                 ></textarea>
             </div>
-            
+
 
             {/* Submit Button */}
             <button type="submit" className="bg-green-700 text-white px-6 py-2 rounded-lg hover:bg-green-800">
