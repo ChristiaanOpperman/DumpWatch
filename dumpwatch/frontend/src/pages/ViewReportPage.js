@@ -15,6 +15,7 @@ const ViewReportPage = () => {
     const userId = '85e50cfa-b63b-11ef-bb4c-f8e9a5819770';
 
 
+
     // Fetch the report details
     const fetchReport = async () => {
         try {
@@ -30,8 +31,8 @@ const ViewReportPage = () => {
     const fetchComments = async () => {
         try {
             const response = await axios.get(`/get-comments-by-reportId/${reportId}`);
-            console.log('Comments:', response.data);
-            setComments(response.data);
+            console.log('Comments:', response.data || []);
+            setComments(response.data || []);
         } catch (err) {
             console.error('Error fetching comments:', err);
             setError('Failed to load comments');
@@ -42,29 +43,31 @@ const ViewReportPage = () => {
     const handlePostComment = async () => {
         if (!commentInput.trim()) return; // Do not allow empty comments
         setPosting(true);
-        
+
         try {
             console.log('CreatedById: ', userId);
-            const newComment = {    
+            const newComment = {
                 Message: commentInput,
                 CreatedById: userId,
                 ReportId: reportId,
             };
             console.log('Posting comment:', newComment);
             await axios.post('/create-comment', newComment);
-            
-            // Optimistically update the comment list
-            setComments((prevComments = []) => [
-                {
-                    CommentId: Date.now(), 
-                    ReportId: reportId,
-                    CreatedById: newComment.CreatedById, // ✅ Fixed the property name
-                    CreatedDate: new Date().toISOString(),
-                    Message: newComment.Message, // ✅ Fixed the property name
-                },
-                ...prevComments
-            ]);
-            
+
+            setComments(
+                [
+                    ...comments,
+                    {
+                        CommentId: Date.now(),
+                        ReportId: reportId,
+                        CreatedById: newComment.CreatedById,
+                        CreatedDate: new Date().toISOString(),
+                        Message: newComment.Message,
+                    }
+                ]
+            );
+
+
             setCommentInput(''); // Clear the input
         } catch (err) {
             console.error('Error posting comment:', err);
@@ -111,9 +114,9 @@ const ViewReportPage = () => {
                 {report && (
                     <div className="bg-white rounded-lg shadow-md mb-6">
                         {report.ImageURL && (
-                            <img 
-                                src={`http://localhost:8080/${report.ImageURL}`} 
-                                alt="Reported Post" 
+                            <img
+                                src={`http://localhost:8080/${report.ImageURL}`}
+                                alt="Reported Post"
                                 className="w-full h-64 object-cover rounded-t-lg"
                             />
                         )}
@@ -131,7 +134,7 @@ const ViewReportPage = () => {
                 <div className="bg-white rounded-lg shadow-md p-6">
                     <h2 className="text-xl font-bold mb-4">Add a Comment</h2>
                     <div className="mb-4">
-                        <textarea 
+                        <textarea
                             className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                             rows="3"
                             placeholder="Write a comment..."
@@ -139,9 +142,9 @@ const ViewReportPage = () => {
                             onChange={(e) => setCommentInput(e.target.value)}
                         />
                     </div>
-                    <button 
-                        onClick={handlePostComment} 
-                        className={`bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ${posting ? 'opacity-50 cursor-not-allowed' : ''}`} 
+                    <button
+                        onClick={handlePostComment}
+                        className={`bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ${posting ? 'opacity-50 cursor-not-allowed' : ''}`}
                         disabled={posting}
                     >
                         {posting ? 'Posting...' : 'Post Comment'}

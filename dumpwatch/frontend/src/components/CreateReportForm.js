@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../api/api';
 import imageCompression from 'browser-image-compression';
-import { addToDB, getAllFromDB, deleteFromDB, updateDBItemStatus } from '../helpers/indexedDB'; // Import IndexedDB helpers
 
 const CreateReportForm = () => {
     const [description, setDescription] = useState('');
@@ -19,7 +18,6 @@ const CreateReportForm = () => {
     // Request user's location when the component mounts
     useEffect(() => {
         if (useCurrentLocation) fetchUserLocation();
-        handlePendingUploads(); // Try to upload pending reports when user comes online
     }, [useCurrentLocation]);
 
     const fetchUserLocation = () => {
@@ -52,73 +50,16 @@ const CreateReportForm = () => {
         formData.append('address', address);
         formData.append('province', province);
 
-        if (!navigator.onLine) {
-            // 🚫 User is offline — Save the form data to IndexedDB
-            try {
-                const formDataObject = {};
-                formData.forEach((value, key) => {
-                    formDataObject[key] = value;
-                });
-
-                await addToDB('dumpwatchDB', 'pendingReports', {
-                    url: '/create-report',
-                    method: 'POST',
-                    body: formDataObject,
-                });
-
-                setMessage('You are offline. Report saved and will be uploaded when you are back online.');
-            } catch (error) {
-                console.error('[CreateReportForm] Error saving report for offline sync:', error);
-                setMessage('Failed to save the report for offline upload.');
-            }
-        } else {
-            // 🌐 User is online — Upload the form directly
-            try {
-                const response = await axios.post('/create-report', formData, {
-                    headers: { 'Content-Type': 'multipart/form-data' },
-                });
-                setMessage('Post uploaded successfully!');
-            } catch (error) {
-                console.error('Full error:', error);
-                setMessage(error.response?.data || 'Failed to upload post. Please try again.');
-            }
-        }
-    };
-
-    const handlePendingUploads = async () => {
-        if (!navigator.onLine) return;
-    
         try {
-            const pendingReports = await getAllFromDB('dumpwatchDB', 'pendingReports');
-    
-            for (const report of pendingReports) {
-                if (report.status === 'pending') {
-                    const formData = new FormData();
-                    for (const key in report.body) {
-                        formData.append(key, report.body[key]);
-                    }
-    
-                    try {
-                        const response = await axios.post(report.url, formData, {
-                            headers: { 'Content-Type': 'multipart/form-data' },
-                        });
-    
-                        // Update the status to 'synced'
-                        await updateDBItemStatus('dumpwatchDB', 'pendingReports', report.id, 'synced');
-                        await deleteFromDB('dumpwatchDB', 'pendingReports', report.id);
-                        
-                        console.log('[CreateReportForm] Successfully uploaded pending report:', report);
-                    } catch (error) {
-                        console.error('[CreateReportForm] Failed to upload report:', report, error);
-                        // Optionally, you could update the status to 'failed' instead of deleting
-                    }
-                }
-            }
+            await axios.post('/create-report', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            });
+            setMessage('Post uploaded successfully!');
         } catch (error) {
-            console.error('[CreateReportForm] Error handling pending uploads:', error);
+            console.error('Full error:', error);
+            setMessage(error.response?.data || 'Failed to upload post. Please try again.');
         }
-    };
-    
+    }
 
 
     const handleFileChange = async (event) => {

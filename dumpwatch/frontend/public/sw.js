@@ -73,44 +73,6 @@ self.addEventListener('fetch', (event) => {
     );
 });
 
-// Background sync for pending uploads
-self.addEventListener('sync', (event) => {
-    // if (event.tag === 'sync-uploads') {
-    //     event.waitUntil(
-    //         (async () => {
-    //             const db = await openDB('dumpwatchDB', 'pendingReports');
-    //             const tx = db.transaction('pendingReports', 'readonly');
-    //             const store = tx.objectStore('pendingReports');
-    //             const pendingReports = await store.getAll();
-
-    //             for (const report of pendingReports) {
-    //                 try {
-    //                     const formData = new FormData();
-    //                     for (const key in report.body) {
-    //                         formData.append(key, report.body[key]);
-    //                     }
-
-    //                     const response = await fetch(report.url, {
-    //                         method: report.method,
-    //                         body: formData,
-    //                     });
-
-    //                     if (response.ok) {
-    //                         const tx = db.transaction('pendingReports', 'readwrite');
-    //                         const store = tx.objectStore('pendingReports');
-    //                         store.delete(report.id);
-    //                         console.log('[Service Worker] Report uploaded and removed from queue.');
-    //                     }
-    //                 } catch (err) {
-    //                     console.error('[Service Worker] Upload failed, will retry.', err);
-    //                 }
-    //             }
-    //         })()
-    //     );
-    // }
-});
-
-
 // Push notification event
 self.addEventListener('push', (event) => {
     const data = event.data ? event.data.json() : {};
