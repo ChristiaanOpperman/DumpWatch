@@ -1,7 +1,7 @@
-// Import necessary modules
 import React, { useState, useEffect } from 'react';
 import axios from '../api/api';
 import imageCompression from 'browser-image-compression';
+import offlineReportSync from '../helpers/indexedDB'; // Adjust the import path as needed
 
 const CreateReportForm = () => {
     const [description, setDescription] = useState('');
@@ -9,13 +9,12 @@ const CreateReportForm = () => {
     const [longitude, setLongitude] = useState('');
     const [image, setImage] = useState(null);
     const [message, setMessage] = useState('');
-    const [useCurrentLocation, setUseCurrentLocation] = useState(true); // For toggle switch
-    const [address, setAddress] = useState(''); // For manual location entry
-    const [province, setProvince] = useState(''); // For manual province entry
+    const [useCurrentLocation, setUseCurrentLocation] = useState(true);
+    const [address, setAddress] = useState('');
+    const [province, setProvince] = useState('');
 
     const userId = '85e50cfa-b63b-11ef-bb4c-f8e9a5819770';
 
-    // Request user's location when the component mounts
     useEffect(() => {
         if (useCurrentLocation) fetchUserLocation();
     }, [useCurrentLocation]);
@@ -38,28 +37,85 @@ const CreateReportForm = () => {
         }
     };
 
+    // const handleSubmit = async (event) => {
+    //     event.preventDefault();
+
+        
+
+    //     const formData = new FormData();
+    //     formData.append('userId', userId);
+    //     formData.append('description', description);
+    //     formData.append('latitude', latitude);
+    //     formData.append('longitude', longitude);
+    //     if (image) formData.append('image', image, image.name);
+    //     formData.append('address', address);
+    //     formData.append('province', province);
+
+    //     try {
+    //         await axios.post('/create-report', formData, {
+    //             headers: { 'Content-Type': 'multipart/form-data' },
+    //         });
+    //         setMessage('Post uploaded successfully!');
+    //     } catch (error) {
+    //         console.error('Full error:', error);
+    //         setMessage(error.response?.data || 'Failed to upload post. Please try again.');
+    //     }
+    // }
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        const formData = new FormData();
-        formData.append('userId', userId);
-        formData.append('description', description);
-        formData.append('latitude', latitude);
-        formData.append('longitude', longitude);
-        if (image) formData.append('image', image, image.name);
-        formData.append('address', address);
-        formData.append('province', province);
+        const reportData = {
+            userId,
+            description,
+            latitude,
+            longitude,
+            image,
+            address,
+            province
+        };
 
         try {
+            if (!navigator.onLine) {
+                // Offline handling
+                await offlineReportSync.addPendingReport({
+                    ...reportData,
+                    image: image // Pass the actual image file
+                });
+
+                setMessage('Post saved offline. It will be uploaded when you are back online.');
+                return;
+            }
+
+            // Online submission
+            const formData = new FormData();
+            Object.keys(reportData).forEach(key => {
+                if (key !== 'image') {
+                    formData.append(key, reportData[key]);
+                }
+            });
+            if (image) formData.append('image', image, image.name);
+
             await axios.post('/create-report', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
+            
             setMessage('Post uploaded successfully!');
         } catch (error) {
             console.error('Full error:', error);
-            setMessage(error.response?.data || 'Failed to upload post. Please try again.');
+            
+            if (!navigator.onLine) {
+                // Fallback offline handling
+                await offlineReportSync.addPendingReport({
+                    ...reportData,
+                    image: image
+                });
+                setMessage('No internet connection. Post will be synced later.');
+            } else {
+                setMessage(error.response?.data || 'Failed to upload post. Please try again.');
+            }
         }
-    }
+    };
 
 
     const handleFileChange = async (event) => {
@@ -86,7 +142,7 @@ const CreateReportForm = () => {
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
             {message && (
-                <p className={`p-4 rounded-md ${message.includes('successfully') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                <p className={`p-4 rounded-md ${message.includes('successfully' || 'offline') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                     {message}
                 </p>
             )}
@@ -107,10 +163,8 @@ const CreateReportForm = () => {
             </div>
 
 
-            {/* Conditionally Render Fields Based on Location Mode */}
             {useCurrentLocation ? (
                 <>
-                    {/* Latitude Field */}
                     <div>
                         <label className="block font-bold mb-1">Latitude:</label>
                         <input
@@ -122,8 +176,6 @@ const CreateReportForm = () => {
                             aria-label="Latitude"
                         />
                     </div>
-
-                    {/* Longitude Field */}
                     <div>
                         <label className="block font-bold mb-1">Longitude:</label>
                         <input
@@ -149,7 +201,6 @@ const CreateReportForm = () => {
                 </>
             ) : (
                 <>
-                    {/* Address Field */}
                     <div>
                         <label className="block font-bold mb-1">Street Address:</label>
                         <input
@@ -161,8 +212,6 @@ const CreateReportForm = () => {
                             required={!useCurrentLocation}
                         />
                     </div>
-
-                    {/* Province Field */}
                     <div>
                         <label className="block font-bold mb-1">Province:</label>
                         <input
@@ -177,7 +226,6 @@ const CreateReportForm = () => {
                 </>
             )
             }
-            {/* Image Upload Field */}
             <div>
                 <label className="block font-bold mb-1">Image:</label>
                 <input
@@ -199,9 +247,6 @@ const CreateReportForm = () => {
                     required
                 ></textarea>
             </div>
-
-
-            {/* Submit Button */}
             <button type="submit" className="bg-green-700 text-white px-6 py-2 rounded-lg hover:bg-green-800">
                 Upload Post
             </button>

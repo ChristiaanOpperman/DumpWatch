@@ -60,9 +60,8 @@ const CommunityPage = () => {
                         {showImages ? 'Hide Images' : 'Show Images'}
                     </button>
                 </div>
-
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    {reports.map((report) => (
+                    {reports?.map((report) => (
                         <div
                             key={report.ReportId}
                             className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transform transition-transform hover:scale-105"
