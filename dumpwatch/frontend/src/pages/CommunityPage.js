@@ -65,7 +65,7 @@ const CommunityPage = () => {
                         <div
                             key={report.ReportId}
                             className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transform transition-transform hover:scale-105"
-                            onClick={() => navigate(`/community/${report.ReportId}`)} // Navigate to the report's page
+                            onClick={() => navigate(`/community/${report.ReportId}`)}
                         >
                             {showImages && (
                                 <img

@@ -14,7 +14,6 @@ const FILES_TO_CACHE = [
     '/favicon.ico',
 ];
 
-
 // Install event - cache assets
 self.addEventListener('install', (event) => {
     event.waitUntil(

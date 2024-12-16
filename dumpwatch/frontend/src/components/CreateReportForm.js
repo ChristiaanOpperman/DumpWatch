@@ -38,7 +38,6 @@ const CreateReportForm = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-
         const reportData = {
             userId,
             description,
@@ -48,7 +47,6 @@ const CreateReportForm = () => {
             address,
             province
         };
-
         try {
             if (!navigator.onLine) {
                 await offlineReportSync.addPendingReport({

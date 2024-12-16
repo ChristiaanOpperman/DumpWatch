@@ -26,7 +26,6 @@ const ViewReportPage = () => {
         }
     };
 
-    // Fetch the comments related to the report
     const fetchComments = async () => {
         try {
             const response = await axios.get(`/get-comments-by-reportId/${reportId}`);
@@ -38,9 +37,8 @@ const ViewReportPage = () => {
         }
     };
 
-    // Post a new comment
     const handlePostComment = async () => {
-        if (!commentInput.trim()) return; // Do not allow empty comments
+        if (!commentInput.trim()) return;
         setPosting(true);
 
         try {

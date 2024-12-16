@@ -17,7 +17,6 @@ func CreateReport(c *gin.Context) {
 	longitude := c.PostForm("longitude")
 	userId := c.PostForm("userId")
 
-	// Get the image from form data
 	file, err := c.FormFile("image")
 	if err != nil {
 		log.Printf("FormFile error: %v", err)
@@ -25,7 +24,6 @@ func CreateReport(c *gin.Context) {
 		return
 	}
 
-	// Ensure uploads directory exists
 	if _, err := os.Stat("./uploads"); os.IsNotExist(err) {
 		err = os.Mkdir("./uploads", 0755)
 		if err != nil {
@@ -35,7 +33,6 @@ func CreateReport(c *gin.Context) {
 		}
 	}
 
-	// Save the file to the local file system
 	filePath := fmt.Sprintf("./uploads/%s", file.Filename)
 	if err := c.SaveUploadedFile(file, filePath); err != nil {
 		log.Printf("SaveUploadedFile error: %v", err)
@@ -43,7 +40,6 @@ func CreateReport(c *gin.Context) {
 		return
 	}
 
-	// Insert report into the database
 	query := `INSERT INTO Report (CreatedById, Description, Latitude, Longitude, ImageURL) VALUES (?, ?, ?, ?, ?)`
 	_, err = config.DB.Exec(query, userId, description, latitude, longitude, filePath)
 	if err != nil {
@@ -56,14 +52,12 @@ func CreateReport(c *gin.Context) {
 }
 
 func GetAllReports(c *gin.Context) {
-	// Check if DB connection is not nil
 	if config.DB == nil {
 		log.Println("Database connection is nil")
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database connection error"})
 		return
 	}
 
-	// Query the database to fetch all reports
 	rows, err := config.DB.Query(`
 		SELECT ReportId, CreatedById, CreatedDate, LastModifiedDate, Description, Latitude, Longitude, ImageURL
 		FROM Report;
@@ -75,10 +69,8 @@ func GetAllReports(c *gin.Context) {
 	}
 	defer rows.Close()
 
-	// Slice to hold all reports
 	var reports []models.Report
 
-	// Iterate over rows and populate the slice
 	for rows.Next() {
 		var report models.Report
 		err := rows.Scan(
@@ -109,14 +101,12 @@ func GetAllReports(c *gin.Context) {
 func GetReportById(c *gin.Context) {
 	reportId := c.Param("reportId")
 
-	// Check if DB connection is not nil
 	if config.DB == nil {
 		log.Println("Database connection is nil")
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database connection error"})
 		return
 	}
 
-	// Query the database to fetch the report by ReportId
 	row := config.DB.QueryRow(`
 		SELECT ReportId, CreatedById, CreatedDate, LastModifiedDate, Description, Latitude, Longitude, ImageURL
 		FROM Report
@@ -125,7 +115,6 @@ func GetReportById(c *gin.Context) {
 
 	var report models.Report
 
-	// Scan the single row into the report struct
 	err := row.Scan(
 		&report.ReportId,
 		&report.CreatedById,
@@ -147,7 +136,6 @@ func GetReportById(c *gin.Context) {
 		return
 	}
 
-	// Return the single report as a JSON response
 	c.JSON(http.StatusOK, report)
 }
 
