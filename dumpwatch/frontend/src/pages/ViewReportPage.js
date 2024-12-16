@@ -4,19 +4,18 @@ import Layout from '../components/Layout';
 import { useParams } from 'react-router-dom';
 
 const ViewReportPage = () => {
-    const { reportId } = useParams(); // Extract reportId from URL
+    const { reportId } = useParams();
     const [report, setReport] = useState(null);
     const [comments, setComments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [commentInput, setCommentInput] = useState(''); // Input box for the new comment
-    const [posting, setPosting] = useState(false); // Loading state for submitting a comment
+    const [commentInput, setCommentInput] = useState('');
+    const [posting, setPosting] = useState(false);
 
     const userId = '85e50cfa-b63b-11ef-bb4c-f8e9a5819770';
 
 
 
-    // Fetch the report details
     const fetchReport = async () => {
         try {
             const response = await axios.get(`/get-report-by-reportId/${reportId}`);
@@ -68,7 +67,7 @@ const ViewReportPage = () => {
             );
 
 
-            setCommentInput(''); // Clear the input
+            setCommentInput('');
         } catch (err) {
             console.error('Error posting comment:', err);
             alert('Failed to post comment. Please try again.');
@@ -77,7 +76,6 @@ const ViewReportPage = () => {
         }
     };
 
-    // Run both fetches when the component mounts
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);

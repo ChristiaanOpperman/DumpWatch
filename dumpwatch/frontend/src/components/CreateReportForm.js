@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../api/api';
 import imageCompression from 'browser-image-compression';
-import offlineReportSync from '../helpers/indexedDB'; // Adjust the import path as needed
-
+import offlineReportSync from '../helpers/indexedDB';
 const CreateReportForm = () => {
     const [description, setDescription] = useState('');
     const [latitude, setLatitude] = useState('');
@@ -37,31 +36,6 @@ const CreateReportForm = () => {
         }
     };
 
-    // const handleSubmit = async (event) => {
-    //     event.preventDefault();
-
-        
-
-    //     const formData = new FormData();
-    //     formData.append('userId', userId);
-    //     formData.append('description', description);
-    //     formData.append('latitude', latitude);
-    //     formData.append('longitude', longitude);
-    //     if (image) formData.append('image', image, image.name);
-    //     formData.append('address', address);
-    //     formData.append('province', province);
-
-    //     try {
-    //         await axios.post('/create-report', formData, {
-    //             headers: { 'Content-Type': 'multipart/form-data' },
-    //         });
-    //         setMessage('Post uploaded successfully!');
-    //     } catch (error) {
-    //         console.error('Full error:', error);
-    //         setMessage(error.response?.data || 'Failed to upload post. Please try again.');
-    //     }
-    // }
-
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -77,17 +51,15 @@ const CreateReportForm = () => {
 
         try {
             if (!navigator.onLine) {
-                // Offline handling
                 await offlineReportSync.addPendingReport({
                     ...reportData,
-                    image: image // Pass the actual image file
+                    image: image
                 });
 
                 setMessage('Post saved offline. It will be uploaded when you are back online.');
                 return;
             }
 
-            // Online submission
             const formData = new FormData();
             Object.keys(reportData).forEach(key => {
                 if (key !== 'image') {
@@ -105,7 +77,6 @@ const CreateReportForm = () => {
             console.error('Full error:', error);
             
             if (!navigator.onLine) {
-                // Fallback offline handling
                 await offlineReportSync.addPendingReport({
                     ...reportData,
                     image: image

@@ -10,7 +10,6 @@ const Layout = ({ children, pageTitle }) => {
 
     return (
         <div className="relative min-h-screen bg-gray-200">
-            {/* Menu Drawer */}
             <div
                 className={`fixed inset-0 bg-black bg-opacity-50 z-40 ${isDrawerOpen ? 'block' : 'hidden'}`}
                 onClick={toggleDrawer}
@@ -21,7 +20,6 @@ const Layout = ({ children, pageTitle }) => {
             >
                 <header className="bg-green-700 text-white p-6 flex justify-between items-center">
                     <div className="flex items-center space-x-4">
-                        {/* <img src="../../public/mobile-logo.png" alt="DumpWatch Logo" className="h-8 w-8" /> */}
                         <h1 className="text-2xl font-bold">DumpWatch</h1>
                     </div>
                     <button aria-label="menu" onClick={toggleDrawer} className="focus:outline-none">
@@ -47,17 +45,13 @@ const Layout = ({ children, pageTitle }) => {
                         Community
                     </Link>
                 </nav>
-
             </div>
 
 
-            {/* Header */}
             <div className="flex flex-col min-h-screen bg-gray-200">
-
-                {/* Header */}
                 <header className="bg-green-700 text-white p-6 flex justify-between items-center">
                     <h1 className="text-2xl font-bold">{pageTitle}</h1>
-                    <button  aria-label="menu-header" onClick={toggleDrawer} className="focus:outline-none">
+                    <button aria-label="menu-header" onClick={toggleDrawer} className="focus:outline-none">
                         <div className="space-y-1">
                             <div className="w-6 h-1 bg-white"></div>
                             <div className="w-6 h-1 bg-white"></div>
@@ -65,13 +59,9 @@ const Layout = ({ children, pageTitle }) => {
                         </div>
                     </button>
                 </header>
-
-                {/* Main Content */}
                 <main className="flex-grow">
                     {children}
                 </main>
-
-                {/* Footer */}
                 <footer className="bg-green-700 text-white p-4 text-center">
                     <p>&copy; 2024 DumpWatch. All rights reserved.</p>
                 </footer>

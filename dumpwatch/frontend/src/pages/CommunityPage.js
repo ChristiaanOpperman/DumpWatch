@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../api/api';
 import Layout from '../components/Layout';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+import { useNavigate } from 'react-router-dom';
 
 const CommunityPage = () => {
     const [reports, setReports] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [showImages, setShowImages] = useState(false); // State to toggle image visibility
-    const navigate = useNavigate(); // Initialize navigate function
+    const [showImages, setShowImages] = useState(false);
+    const navigate = useNavigate();
 
     const fetchReports = async () => {
         try {
