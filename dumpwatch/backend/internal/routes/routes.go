@@ -16,6 +16,7 @@ func RegisterRoutes(router *gin.Engine) {
 	router.GET("/get-comments-by-reportId/:reportId", handlers.GetCommentsByReportId)
 	router.POST("/create-comment", handlers.CreateComment)
 
-	// Routes for Users
-	router.POST("/create-user", handlers.CreateUser)
+	// User Routes
+	router.POST("/register", handlers.Register)
+	router.POST("/login", handlers.Login)
 }

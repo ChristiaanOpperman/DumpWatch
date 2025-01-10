@@ -5,7 +5,7 @@ CREATE TABLE
     User(
         UserId VARCHAR(36) PRIMARY KEY DEFAULT(UUID()),
         UserType ENUM('Community', 'Organisation') NOT NULL,
-        CommunityName VARCHAR(255),
+        OrganisationName VARCHAR(255),
         Category ENUM(
             'Volunteer Group',
             'Non-Governmental Organization',

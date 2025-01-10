@@ -33,8 +33,8 @@ const Layout = ({ children, pageTitle }) => {
 
                 <nav className="p-4 space-y-4">
                     <Link
-                        to="/"
-                        className={`block text-lg font-bold ${window.location.pathname === '/' ? 'text-green-700' : 'text-gray-500'}`}
+                        to="/home"
+                        className={`block text-lg font-bold ${window.location.pathname === '/home' ? 'text-green-700' : 'text-gray-500'}`}
                     >
                         Report
                     </Link>
