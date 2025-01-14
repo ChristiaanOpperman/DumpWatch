@@ -101,16 +101,18 @@ func Login(c *gin.Context) {
 	email := user.Email
 	password := user.Password
 
+	// Check if the user exists
 	row := config.DB.QueryRow(`SELECT UserId, PasswordHash FROM User WHERE Email = ?`, email)
 	var storedHash string
 	if err := row.Scan(&user.UserId, &storedHash); err != nil {
-		log.Printf("User not found: %v", err)
+		log.Printf("User not found with email: %s", email)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
 		return
 	}
 
 	// Verify password
 	if !checkPasswordHash(password, storedHash) {
+		log.Printf("Password mismatch for user: %s", email)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
 		return
 	}
@@ -118,19 +120,23 @@ func Login(c *gin.Context) {
 	// Generate JWT token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"userId": user.UserId,
-		// "exp":    time.Now().Add(15 * time.Second).Unix(), // Token expires in 15 seconds
 		"exp":    time.Now().Add(24 * time.Hour).Unix(), // Token expires in 24 hours
 	})
 
 	tokenString, err := token.SignedString(jwtSecret)
 	if err != nil {
-		log.Printf("Failed to generate token: %v", err)
+		log.Printf("Failed to generate token for user: %s", email)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": tokenString})
+	log.Printf("User logged in successfully: %s", email)
+	c.JSON(http.StatusOK, gin.H{
+		"token":  tokenString,
+		"userId": user.UserId,
+	})
 }
+
 
 func checkPasswordHash(password, encodedHash string) bool {
 	// Decode the stored hash
