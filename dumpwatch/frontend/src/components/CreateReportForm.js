@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../api/api';
 import imageCompression from 'browser-image-compression';
-import offlineReportSync from '../helpers/indexedDB';
 const CreateReportForm = () => {
     const [description, setDescription] = useState('');
     const [latitude, setLatitude] = useState('');
@@ -49,12 +48,7 @@ const CreateReportForm = () => {
         };
         try {
             if (!navigator.onLine) {
-                await offlineReportSync.addPendingReport({
-                    ...reportData,
-                    image: image
-                });
-
-                setMessage('Post saved offline. It will be uploaded when you are back online.');
+                setMessage('Currently offline. Please check your internet connection, and try again.');
                 return;
             }
 
@@ -75,17 +69,12 @@ const CreateReportForm = () => {
             console.error('Full error:', error);
             
             if (!navigator.onLine) {
-                await offlineReportSync.addPendingReport({
-                    ...reportData,
-                    image: image
-                });
-                setMessage('No internet connection. Post will be synced later.');
+                setMessage('No internet connection. Please check your internet connection, and try again.');
             } else {
                 setMessage(error.response?.data || 'Failed to upload post. Please try again.');
             }
         }
     };
-
 
     const handleFileChange = async (event) => {
         const file = event.target.files[0];
