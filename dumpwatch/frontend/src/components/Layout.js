@@ -27,7 +27,7 @@ const Layout = ({ children, pageTitle }) => {
             >
                 <header className="bg-green-700 text-white p-6 flex justify-between items-center">
                     <div className="flex items-center space-x-4">
-                        <h1 className="text-2xl font-bold">DumpWatch</h1>
+                        <h1 className="text-2xl font-bold">Menu</h1>
                     </div>
                     <button aria-label="menu" onClick={toggleDrawer} className="focus:outline-none">
                         <div className="space-y-1">
@@ -62,7 +62,13 @@ const Layout = ({ children, pageTitle }) => {
 
             <div className="flex flex-col min-h-screen bg-gray-200">
                 <header className="bg-green-700 text-white p-6 flex justify-between items-center">
-                    <h1 className="text-2xl font-bold">{pageTitle}</h1>
+                    <div className="flex flex-col">
+                        <div className="flex items-center space-x-2">
+                            <h1 className="text-2xl font-bold">DumpWatch</h1>
+                            <img src="/mobile-logo.png" alt="DumpWatch Logo" className="h-8 w-8" />
+                        </div>
+                        <p className="text-m text-gray-300">{pageTitle}</p>
+                    </div>
                     <button aria-label="menu-header" onClick={toggleDrawer} className="focus:outline-none">
                         <div className="space-y-1">
                             <div className="w-6 h-1 bg-white"></div>

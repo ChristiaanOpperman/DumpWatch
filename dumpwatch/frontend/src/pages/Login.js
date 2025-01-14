@@ -25,12 +25,12 @@ const Login = () => {
     };
 
     const validateEmail = (email) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Email validation
         return emailRegex.test(email);
     };
 
     const validatePassword = (password) => {
-        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/; // Password validation, at least 6 characters and contains letters and numbers
         return passwordRegex.test(password);
     };
 
