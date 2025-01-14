@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const [isRegister, setIsRegister] = useState(false);
-    const [userType, setUserType] = useState('Community'); // Default type
+    const [userType, setUserType] = useState('Community');
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -12,17 +12,49 @@ const Login = () => {
         organisationName: '',
         category: '',
     });
+    const [errorMessage, setErrorMessage] = useState();
+    const [errors, setErrors] = useState({ email: '', password: '' }); // Error messages for validation
     const navigate = useNavigate();
 
     const handleChange = (e) => {
+        setErrorMessage(undefined);
         setFormData({
             ...formData,
             [e.target.name]: e.target.value,
         });
     };
 
+    const validateEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
+    const validatePassword = (password) => {
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+        return passwordRegex.test(password);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Reset errors
+        setErrors({ email: '', password: '' });
+
+        // Validate email
+        if (!validateEmail(formData.email)) {
+            setErrors((prev) => ({ ...prev, email: 'Invalid email address' }));
+            return;
+        }
+
+        // Validate password
+        if (isRegister && !validatePassword(formData.password)) {
+            setErrors((prev) => ({
+                ...prev,
+                password: 'Password must contain at least 6 characters, including letters and numbers',
+            }));
+            return;
+        }
+
         const endpoint = isRegister ? '/register' : '/login';
         const payload = {
             email: formData.email,
@@ -31,23 +63,33 @@ const Login = () => {
             ...(userType === 'Community' && { firstName: formData.firstName, lastName: formData.lastName }),
             ...(userType === 'Organisation' && { organisationName: formData.organisationName, category: formData.category }),
         };
+        try {
+            const response = await fetch(`http://localhost:8080${endpoint}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
 
-        const response = await fetch(`http://localhost:8080${endpoint}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-        });
-        const result = await response.json();
-        if (response.ok) {
-            if (!isRegister) {
-                localStorage.setItem('token', result.token);
-                navigate('/home');
+            const result = await response.json();
+
+            console.log('result: ', result);
+
+            if (response.ok) {
+                if (!isRegister) {
+                    localStorage.setItem('token', result.token);
+                    localStorage.setItem('user', JSON.stringify(result.user));
+                    navigate('/home');
+                } else {
+                    alert('Registration successful! You can now log in.');
+                    setIsRegister(false);
+                }
             } else {
-                alert('Registration successful! You can now log in.');
-                setIsRegister(false);
+                console.log('Error in logging in backend: ', result.error);
+                setErrorMessage(result.error || 'An unknown error occurred.');
             }
-        } else {
-            alert(result.error || 'Something went wrong.');
+        } catch (error) {
+            setErrorMessage('Something went wrong while attempting to log in.');
+            console.error('Error in login try catch:', error);
         }
     };
 
@@ -58,6 +100,9 @@ const Login = () => {
                     {isRegister ? 'Register' : 'Login'}
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
+                    {errorMessage && (
+                        <p className="text-red-600 text-center text-sm mt-2">{errorMessage}</p>
+                    )}
                     {isRegister && (
                         <>
                             <div>
@@ -161,6 +206,7 @@ const Login = () => {
                             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
                             required
                         />
+                        {isRegister && errors.email && <p className="text-red-600 text-sm mt-1">{errors.email}</p>}
                     </div>
                     <div>
                         <label htmlFor="password" className="block text-sm font-medium text-gray-700">
@@ -175,6 +221,7 @@ const Login = () => {
                             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
                             required
                         />
+                        {isRegister && errors.password && <p className="text-red-600 text-sm mt-1">{errors.password}</p>}
                     </div>
                     <button
                         type="submit"

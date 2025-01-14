@@ -1,11 +1,18 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Layout = ({ children, pageTitle }) => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const navigate = useNavigate();
+
 
     const toggleDrawer = () => {
         setIsDrawerOpen(!isDrawerOpen);
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        navigate('/login');
     };
 
     return (
@@ -40,13 +47,18 @@ const Layout = ({ children, pageTitle }) => {
                     </Link>
                     <Link
                         to="/community"
-                        className={`block text-lg font-bold ${window.location.pathname === '/community' ? 'text-green-700' : 'text-gray-500'}`}
+                        className={`block text-lg font-bold ${window.location.pathname.includes('/community') ? 'text-green-700' : 'text-gray-500'}`}
                     >
                         Community
                     </Link>
+                    <button
+                        onClick={handleLogout}
+                        className="block text-lg font-bold text-gray-500 hover:text-green-700 w-full text-left"
+                    >
+                        Log Out
+                    </button>
                 </nav>
             </div>
-
 
             <div className="flex flex-col min-h-screen bg-gray-200">
                 <header className="bg-green-700 text-white p-6 flex justify-between items-center">
