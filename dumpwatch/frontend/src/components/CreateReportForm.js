@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from '../api/api';
 import imageCompression from 'browser-image-compression';
 const CreateReportForm = () => {
@@ -12,6 +12,8 @@ const CreateReportForm = () => {
     const [province, setProvince] = useState('');
 
     const userId = '85e50cfa-b63b-11ef-bb4c-f8e9a5819770';
+    const imageInputRef = useRef(null); // Ref for the file input
+
 
     useEffect(() => {
         if (useCurrentLocation) fetchUserLocation();
@@ -44,30 +46,38 @@ const CreateReportForm = () => {
             longitude,
             image,
             address,
-            province
+            province,
         };
         try {
             if (!navigator.onLine) {
                 setMessage('Currently offline. Please check your internet connection, and try again.');
                 return;
             }
-
+    
             const formData = new FormData();
-            Object.keys(reportData).forEach(key => {
+            Object.keys(reportData).forEach((key) => {
                 if (key !== 'image') {
                     formData.append(key, reportData[key]);
                 }
             });
             if (image) formData.append('image', image, image.name);
-
+    
             await axios.post('/create-report', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
-            
+    
             setMessage('Post uploaded successfully!');
+    
+            // Clear input fields
+            setDescription('');
+            setImage(null);
+            setAddress('');
+            setProvince('');
+            if (imageInputRef.current) {
+                imageInputRef.current.value = '';
+            }
         } catch (error) {
-            console.error('Full error:', error);
-            
+            console.error('Post submission error:', error);
             if (!navigator.onLine) {
                 setMessage('No internet connection. Please check your internet connection, and try again.');
             } else {
@@ -75,6 +85,7 @@ const CreateReportForm = () => {
             }
         }
     };
+    
 
     const handleFileChange = async (event) => {
         const file = event.target.files[0];
@@ -187,6 +198,7 @@ const CreateReportForm = () => {
             <div>
                 <label className="block font-bold mb-1">Image:</label>
                 <input
+                    ref={imageInputRef}
                     aria-label="Report Image"
                     type="file"
                     accept="image/*"
