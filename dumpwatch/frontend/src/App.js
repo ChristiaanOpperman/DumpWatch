@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import CommunityPage from './pages/CommunityPage';
 import ViewReportPage from './pages/ViewReportPage';
 import Login from './pages/Login';
+import PrivateRoute from './components/PrivateRoute';
 
 function App() {
   return (
@@ -11,9 +12,30 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/community" element={<CommunityPage />} />
-        <Route path="/community/:reportId" element={<ViewReportPage />} />
+        <Route
+          path="/home"
+          element={
+            <PrivateRoute>
+              <Home />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/community"
+          element={
+            <PrivateRoute>
+              <CommunityPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/community/:reportId"
+          element={
+            <PrivateRoute>
+              <ViewReportPage />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </Router>
   );
