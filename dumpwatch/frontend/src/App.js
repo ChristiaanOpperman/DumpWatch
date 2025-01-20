@@ -5,6 +5,7 @@ import CommunityPage from './pages/CommunityPage';
 import ViewReportPage from './pages/ViewReportPage';
 import Login from './pages/Login';
 import PrivateRoute from './components/PrivateRoute';
+import KnowledgeBasePage from './pages/KnowledgeBasePage';
 
 function App() {
   return (
@@ -33,6 +34,14 @@ function App() {
           element={
             <PrivateRoute>
               <ViewReportPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/knowledge-base"
+          element={
+            <PrivateRoute>
+              <KnowledgeBasePage />
             </PrivateRoute>
           }
         />

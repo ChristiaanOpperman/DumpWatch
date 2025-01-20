@@ -51,6 +51,12 @@ const Layout = ({ children, pageTitle }) => {
                     >
                         Community
                     </Link>
+                    <Link
+                        to="/knowledge-base"
+                        className={`block text-lg font-bold ${window.location.pathname === '/knowledge-base' ? 'text-green-700' : 'text-gray-500'}`}
+                    >
+                        Knowledge Base
+                    </Link>
                     <button
                         onClick={handleLogout}
                         className="block text-lg font-bold text-gray-500 hover:text-green-700 w-full text-left"

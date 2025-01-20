@@ -12,6 +12,10 @@ const Home = () => {
         navigate('/community');
     };
 
+    const navigateToKnowledgeBase = () => {
+        navigate('/knowledge-base');
+    };
+
     return (
         <Layout pageTitle="Report Illegal Dumping">
             <main className="container mx-auto p-4 space-y-6">
@@ -41,7 +45,6 @@ const Home = () => {
 
                 {/* Report Form */}
                 <section className="bg-white p-8 rounded-lg shadow-lg">
-                    <h2 className="text-2xl font-bold mb-4">Report an Illegal Dumping</h2>
                     <CreateReportForm />
                 </section>
 
@@ -73,7 +76,7 @@ const Home = () => {
                         My Communities
                     </button>
                     <button
-                        onClick={navigateToCommunity}
+                        onClick={navigateToKnowledgeBase}
                         className="bg-[rgb(7,110,203)] text-white py-3 px-6 rounded-lg shadow hover:bg-[rgb(6,99,183)] transition"
                     >
                         Knowledge Base
