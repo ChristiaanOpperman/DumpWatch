@@ -1,9 +1,9 @@
 package models
 
 type Comment struct {
-	CommentId   string
-	CreatedById string
+	CommentId   int
+	CreatedById int
 	CreatedDate string
 	Message     string
-	ReportId    string
+	ReportId    int
 }

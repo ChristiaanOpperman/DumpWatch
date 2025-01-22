@@ -1,32 +1,68 @@
--- db/init.sql
-USE dumpwatch;
+use dumpwatch;
 
-CREATE TABLE
-    User(
-        UserId VARCHAR(36) PRIMARY KEY DEFAULT(UUID()),
-        UserType ENUM('Community', 'Organisation') NOT NULL,
-        OrganisationName VARCHAR(255),
-        Category ENUM(
-            'Volunteer Group',
-            'Non-Governmental Organization',
-            'Community Organisation',
-            'Municipality'
-        ),
-        FirstName VARCHAR(100),
-        LastName VARCHAR(100),
-        Email VARCHAR(255) UNIQUE NOT NULL,
-        CreatedDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
+CREATE TABLE UserType (
+    UserTypeId INT AUTO_INCREMENT PRIMARY KEY,
+    UserType VARCHAR(50) NOT NULL,
+    Category VARCHAR(100) NULL
+);
 
-CREATE TABLE
-    Report (
-        ReportId VARCHAR(36) PRIMARY KEY DEFAULT(UUID()),
-        CreatedById VARCHAR(36) NOT NULL,
-        CreatedDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        LastModifiedDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        Description TEXT,
-        Latitude DECIMAL(10, 8) NOT NULL,
-        Longitude DECIMAL(11, 8) NOT NULL,
-        ImageURL VARCHAR(255),
-        FOREIGN KEY (CreatedById) REFERENCES User(UserId),
-    );
+CREATE TABLE User (
+    UserId INT AUTO_INCREMENT PRIMARY KEY,
+    Email VARCHAR(255) NOT NULL UNIQUE,
+    CreatedDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PasswordHash VARCHAR(255) NOT NULL,
+    UserTypeId INT NOT NULL,
+    Name VARCHAR(255) NOT NULL,
+    CONSTRAINT FK_User_UserType FOREIGN KEY (UserTypeId) REFERENCES UserType(UserTypeId) ON DELETE CASCADE
+);
+
+CREATE TABLE Place (
+    PlaceId INT AUTO_INCREMENT PRIMARY KEY,
+    CountryCode VARCHAR(2) NOT NULL,
+    PlaceName VARCHAR(180) NOT NULL,
+    CONSTRAINT UQ_Place_Country_PlaceName UNIQUE (CountryCode, PlaceName)
+);
+
+CREATE TABLE PlaceDetails (
+    PlaceDetailId INT AUTO_INCREMENT PRIMARY KEY,
+    PlaceId INT NOT NULL,
+    PostalCode VARCHAR(20) NOT NULL,
+    Latitude FLOAT NOT NULL,
+    Longitude FLOAT NOT NULL,
+    Accuracy INT NULL,
+    CONSTRAINT FK_PlaceDetails_Place FOREIGN KEY (PlaceId) REFERENCES Place(PlaceId) ON DELETE CASCADE
+);
+
+CREATE TABLE Report (
+    ReportId INT AUTO_INCREMENT PRIMARY KEY,
+    UserId INT NOT NULL,
+    CreatedDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    LastModifiedDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    Description TEXT NULL,
+    ImageURL VARCHAR(255) NULL,
+    PlaceDetailId INT NOT NULL,
+    CONSTRAINT FK_Report_User FOREIGN KEY (UserId) REFERENCES User(UserId) ON DELETE CASCADE,
+    CONSTRAINT FK_Report_PlaceDetails FOREIGN KEY (PlaceDetailId) REFERENCES PlaceDetails(PlaceDetailId) ON DELETE CASCADE
+);
+
+CREATE TABLE Comment (
+    CommentId INT AUTO_INCREMENT PRIMARY KEY,
+    UserId INT NOT NULL,
+    CreatedDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    Message TEXT NOT NULL,
+    ReportId INT NOT NULL,
+    CONSTRAINT FK_Comment_User FOREIGN KEY (UserId) REFERENCES User(UserId) ON DELETE CASCADE,
+    CONSTRAINT FK_Comment_Report FOREIGN KEY (ReportId) REFERENCES Report(ReportId) ON DELETE CASCADE
+);
+
+CREATE TABLE UserPlaceDetails (
+    UserPlaceDetailsId INT AUTO_INCREMENT PRIMARY KEY,
+    UserId INT NOT NULL,
+    PlaceDetailId INT NOT NULL,
+    CreatedDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_user_place (UserId, PlaceDetailId),
+    CONSTRAINT FK_UserPlaceDetails_User FOREIGN KEY (UserId) 
+        REFERENCES User(UserId) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT FK_UserPlaceDetails_PlaceDetail FOREIGN KEY (PlaceDetailId) 
+        REFERENCES PlaceDetails(PlaceDetailId) ON DELETE CASCADE ON UPDATE CASCADE
+);

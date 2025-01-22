@@ -9,15 +9,18 @@ import (
 )
 
 type User struct {
-	UserId       string
-	UserType     string
-	OrganisationName string
-	Category     string
-	FirstName    string
-	LastName     string
+	UserId       int
+	UserTypeId   int
+	Name         string
 	Email        string
-	Password     string
 	PasswordHash string
+	Password	 string
+}
+
+type UserType struct {
+	UserTypeId int
+	UserType   string
+	Category   string
 }
 
 func HashPassword(password string) (string, error) {

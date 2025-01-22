@@ -1,56 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../api/api';
 import Layout from '../components/Layout';
-import { useNavigate } from 'react-router-dom';
+import CommunityDropdown from '../components/CommunityDropdownForm';
 
 const CommunityPage = () => {
     const [reports, setReports] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showImages, setShowImages] = useState(false);
-    const navigate = useNavigate();
 
-    const fetchReports = async () => {
+    useEffect(() => {
+        fetchReports('all');
+    }, []);
+
+    const fetchReports = async (communityId) => {
+        setLoading(true);
         try {
-            const response = await axios.get('/get-reports');
-            console.log('Reports:', response.data);
+            const endpoint = communityId === 'all' ? '/get-reports' : `/get-reports/${communityId}`;
+            const response = await axios.get(endpoint);
             setReports(response.data);
-            setLoading(false);
         } catch (err) {
-            console.error('Error fetching reports:', err);
             setError('Failed to load reports');
+        } finally {
             setLoading(false);
         }
     };
 
-    useEffect(() => {
-        fetchReports();
-    }, []);
-
-    if (loading) {
-        return (
-            <Layout pageTitle="Community">
-                <div className="flex justify-center items-center h-full bg-[#C8D9A9] p-6">
-                    <div className="text-[#535A46] font-bold">Loading reports...</div>
-                </div>
-            </Layout>
-        );
-    }
-
-    if (error) {
-        return (
-            <Layout pageTitle="Community">
-                <div className="flex justify-center items-center h-full bg-[#C8D9A9] p-6">
-                    <div className="text-red-600 font-bold">{error}</div>
-                </div>
-            </Layout>
-        );
-    }
-
     return (
         <Layout pageTitle="Community">
-            <div className="bg-gray-200 p-6">
-                <h1 className="text-center text-[#535A46] font-bold text-2xl mb-6">Community Reports</h1>
+            <div className="p-6">
+                <h1 className="text-center text-2xl font-bold mb-6">Community Reports</h1>
+                <CommunityDropdown onSelectCommunity={fetchReports} />
 
                 <div className="flex justify-center mb-4">
                     <button
@@ -60,19 +40,15 @@ const CommunityPage = () => {
                         {showImages ? 'Hide Images' : 'Show Images'}
                     </button>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    {reports?.map((report) => (
-                        <div
-                            key={report.ReportId}
-                            className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transform transition-transform hover:scale-105"
-                            onClick={() => navigate(`/community/${report.ReportId}`)}
-                        >
+
+                {loading && <p className="text-center">Loading reports...</p>}
+                {error && <p className="text-center text-red-500">{error}</p>}
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
+                    {reports.map((report) => (
+                        <div key={report.ReportId} className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transform transition-transform hover:scale-105">
                             {showImages && (
-                                <img
-                                    src={`http://localhost:8080/${report.ImageURL}`}
-                                    alt="Posted Illegal Dump"
-                                    className="w-full h-48 object-cover"
-                                />
+                                <img src={`http://localhost:8080/${report.ImageURL}`} alt="Posted Illegal Dump" className="w-full h-48 object-cover" />
                             )}
                             <div className="p-4">
                                 <p className="text-sm text-gray-600 mb-2">

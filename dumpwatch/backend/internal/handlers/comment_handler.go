@@ -19,11 +19,11 @@ func CreateComment(c *gin.Context) {
 
 	log.Printf("Comment recevied: %+v", comment)
 
-	if comment.Message == "" || comment.CreatedById == "" || comment.ReportId == "" {
+	if comment.Message == "" || comment.CreatedById == 0 || comment.ReportId == 0 {
 		log.Println("Missing required fields: message, userId, or reportId")
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing required fields: message, userId, or reportId"})
 		return
-	}
+	}	
 
 	query := `INSERT INTO Comment (CreatedById, Message, ReportId) VALUES (?, ?, ?)`
 	_, err := config.DB.Exec(query, comment.CreatedById, comment.Message, comment.ReportId)

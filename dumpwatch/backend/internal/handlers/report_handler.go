@@ -7,15 +7,30 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
 func CreateReport(c *gin.Context) {
+	log.Printf("Hit!")
 	description := c.PostForm("description")
-	latitude := c.PostForm("latitude")
-	longitude := c.PostForm("longitude")
-	userId := c.PostForm("userId")
+
+	userIdStr := c.PostForm("userId")
+	placeDetailIdStr := c.PostForm("placeDetailId")
+
+	userId, err := strconv.Atoi(userIdStr)
+	if err != nil || userId <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
+	}
+
+	placeDetailId, err := strconv.Atoi(placeDetailIdStr)
+	if err != nil || placeDetailId <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid place detail ID"})
+		return
+	}
+
 
 	file, err := c.FormFile("image")
 	if err != nil {
@@ -40,8 +55,10 @@ func CreateReport(c *gin.Context) {
 		return
 	}
 
-	query := `INSERT INTO Report (CreatedById, Description, Latitude, Longitude, ImageURL) VALUES (?, ?, ?, ?, ?)`
-	_, err = config.DB.Exec(query, userId, description, latitude, longitude, filePath)
+	log.Printf("userId: %v, placeDetailId: %v, description: %v, filePath: %v", userId, placeDetailId, description, filePath)
+
+	query := `INSERT INTO Report (CreatedById, Description, PlaceDetailId, ImageURL) VALUES (?, ?, ?, ?)`
+	_, err = config.DB.Exec(query, userId, description, placeDetailId, filePath)
 	if err != nil {
 		log.Printf("Database insert report error: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save post"})
@@ -59,7 +76,7 @@ func GetAllReports(c *gin.Context) {
 	}
 
 	rows, err := config.DB.Query(`
-		SELECT ReportId, CreatedById, CreatedDate, LastModifiedDate, Description, Latitude, Longitude, ImageURL
+		SELECT ReportId, CreatedById, CreatedDate, LastModifiedDate, Description, PlaceDetailId, ImageURL
 		FROM Report;
 	`)
 	if err != nil {
@@ -79,8 +96,7 @@ func GetAllReports(c *gin.Context) {
 			&report.CreatedDate,
 			&report.LastModifiedDate,
 			&report.Description,
-			&report.Latitude,
-			&report.Longitude,
+			&report.PlaceDetailId,
 			&report.ImageURL,
 		)
 		if err != nil {
@@ -108,7 +124,7 @@ func GetReportById(c *gin.Context) {
 	}
 
 	row := config.DB.QueryRow(`
-		SELECT ReportId, CreatedById, CreatedDate, LastModifiedDate, Description, Latitude, Longitude, ImageURL
+		SELECT ReportId, CreatedById, CreatedDate, LastModifiedDate, Description, PlaceDeetailId, ImageURL
 		FROM Report
 		WHERE ReportId = ?;
 	`, reportId)
@@ -121,8 +137,7 @@ func GetReportById(c *gin.Context) {
 		&report.CreatedDate,
 		&report.LastModifiedDate,
 		&report.Description,
-		&report.Latitude,
-		&report.Longitude,
+		&report.PlaceDetailId,
 		&report.ImageURL,
 	)
 	if err != nil {
@@ -138,4 +153,3 @@ func GetReportById(c *gin.Context) {
 
 	c.JSON(http.StatusOK, report)
 }
-

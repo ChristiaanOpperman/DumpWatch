@@ -3,17 +3,15 @@ import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const [isRegister, setIsRegister] = useState(false);
-    const [userType, setUserType] = useState('Community');
+    const [userTypeId, setUserTypeId] = useState('');
     const [formData, setFormData] = useState({
         email: '',
         password: '',
-        firstName: '',
-        lastName: '',
-        organisationName: '',
+        name: '',
         category: '',
     });
     const [errorMessage, setErrorMessage] = useState();
-    const [errors, setErrors] = useState({ email: '', password: '' }); // Error messages for validation
+    const [errors, setErrors] = useState({ email: '', password: '' });
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -25,28 +23,25 @@ const Login = () => {
     };
 
     const validateEmail = (email) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     };
 
     const validatePassword = (password) => {
-        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/; // Password validation, at least 6 characters and contains letters and numbers
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
         return passwordRegex.test(password);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Reset errors
         setErrors({ email: '', password: '' });
 
-        // Validate email
         if (!validateEmail(formData.email)) {
             setErrors((prev) => ({ ...prev, email: 'Invalid email address' }));
             return;
         }
 
-        // Validate password
         if (isRegister && !validatePassword(formData.password)) {
             setErrors((prev) => ({
                 ...prev,
@@ -59,11 +54,14 @@ const Login = () => {
         const payload = {
             email: formData.email,
             password: formData.password,
-            userType,
-            ...(userType === 'Community' && { firstName: formData.firstName, lastName: formData.lastName }),
-            ...(userType === 'Organisation' && { organisationName: formData.organisationName, category: formData.category }),
+            name: formData.name,
+            // make the below a number
+            userTypeId: parseInt(userTypeId),
         };
+
         try {
+            console.log('sending: ', payload, ' to : ', endpoint);
+
             const response = await fetch(`http://localhost:8080${endpoint}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -72,24 +70,22 @@ const Login = () => {
 
             const result = await response.json();
 
-            console.log('result: ', result);
+            console.group('user response: ', result);
 
             if (response.ok) {
                 if (!isRegister) {
                     localStorage.setItem('token', result.token);
-                    localStorage.setItem('user', JSON.stringify(result.user));
+                    localStorage.setItem('userId', result.userId);
                     navigate('/home');
                 } else {
                     alert('Registration successful! You can now log in.');
                     setIsRegister(false);
                 }
             } else {
-                console.log('Error in logging in backend: ', result.error);
                 setErrorMessage(result.error || 'An unknown error occurred.');
             }
         } catch (error) {
             setErrorMessage('Something went wrong while attempting to log in.');
-            console.error('Error in login try catch:', error);
         }
     };
 
@@ -106,91 +102,39 @@ const Login = () => {
                     {isRegister && (
                         <>
                             <div>
-                                <label htmlFor="userType" className="block text-sm font-medium text-gray-700">
+                                <label htmlFor="userTypeId" className="block text-sm font-medium text-gray-700">
                                     User Type
                                 </label>
                                 <select
-                                    id="userType"
-                                    name="userType"
-                                    value={userType}
-                                    onChange={(e) => setUserType(e.target.value)}
+                                    id="userTypeId"
+                                    name="userTypeId"
+                                    value={userTypeId}
+                                    onChange={(e) => setUserTypeId(e.target.value)}
                                     className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                                    required
                                 >
-                                    <option value="Community">Community Member</option>
-                                    <option value="Organisation">Organisation</option>
+                                    <option value="" disabled>Select user type</option>
+                                    <option value="5">Community Member</option>
+                                    <option value="1">Volunteer Group</option>
+                                    <option value="2">Non-Governmental Organization</option>
+                                    <option value="3">Community Organisation</option>
+                                    <option value="4">Municipality</option>
                                 </select>
                             </div>
-                            {userType === 'Community' && (
-                                <>
-                                    <div>
-                                        <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
-                                            First Name
-                                        </label>
-                                        <input
-                                            type="text"
-                                            id="firstName"
-                                            name="firstName"
-                                            value={formData.firstName}
-                                            onChange={handleChange}
-                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                                            required
-                                        />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
-                                            Last Name
-                                        </label>
-                                        <input
-                                            type="text"
-                                            id="lastName"
-                                            name="lastName"
-                                            value={formData.lastName}
-                                            onChange={handleChange}
-                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                                            required
-                                        />
-                                    </div>
-                                </>
-                            )}
-                            {userType === 'Organisation' && (
-                                <>
-                                    <div>
-                                        <label htmlFor="organisationName" className="block text-sm font-medium text-gray-700">
-                                            Organisation Name
-                                        </label>
-                                        <input
-                                            type="text"
-                                            id="organisationName"
-                                            name="organisationName"
-                                            value={formData.organisationName}
-                                            onChange={handleChange}
-                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                                            required
-                                        />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="category" className="block text-sm font-medium text-gray-700">
-                                            Category
-                                        </label>
-                                        <select
-                                            id="category"
-                                            name="category"
-                                            value={formData.category}
-                                            onChange={handleChange}
-                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                                            required
-                                        >
-                                            <option value="" disabled>
-                                                Select a category
-                                            </option>
-                                            <option value="Volunteer Group">Volunteer Group</option>
-                                            <option value="Non-Governmental Organization">Non-Governmental Organization</option>
-                                            <option value="Community Organisation">Community Organisation</option>
-                                            <option value="Municipality">Municipality</option>
-                                        </select>
-                                    </div>
-                                </>
-                            )}
+                            <div>
+                                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                                    Name
+                                </label>
+                                <input
+                                    type="text"
+                                    id="name"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                                    required
+                                />
+                            </div>
                         </>
                     )}
                     <div>
@@ -206,7 +150,6 @@ const Login = () => {
                             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
                             required
                         />
-                        {isRegister && errors.email && <p className="text-red-600 text-sm mt-1">{errors.email}</p>}
                     </div>
                     <div>
                         <label htmlFor="password" className="block text-sm font-medium text-gray-700">
@@ -221,7 +164,6 @@ const Login = () => {
                             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
                             required
                         />
-                        {isRegister && errors.password && <p className="text-red-600 text-sm mt-1">{errors.password}</p>}
                     </div>
                     <button
                         type="submit"

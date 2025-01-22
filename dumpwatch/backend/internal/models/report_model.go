@@ -1,12 +1,11 @@
 package models
 
 type Report struct {
-	ReportId         string
-	CreatedById      string
+	ReportId         int
+	CreatedById      int
 	CreatedDate      string
 	LastModifiedDate string
 	Description      string
-	Latitude         float64
-	Longitude        float64
+	PlaceDetailId    int
 	ImageURL         string
 }

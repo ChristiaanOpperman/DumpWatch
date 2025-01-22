@@ -8,6 +8,7 @@ import (
 	"encoding/base64"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -29,6 +30,8 @@ func Register(c *gin.Context) {
 		return
 	}
 
+	log.Printf("User: %v", user)
+
 	hash, err := GeneratePasswordHash(password)
 	if err != nil {
 		log.Printf("Password hashing error: %v", err)
@@ -40,29 +43,13 @@ func Register(c *gin.Context) {
 	var query string
 	var args []interface{}
 
-	if user.UserType == "Community" {
-		query = `INSERT INTO User (UserType, Email, PasswordHash, FirstName, LastName)
-		         VALUES (?, ?, ?, ?, ?)`
-		args = []interface{}{
-			user.UserType,
-			user.Email,
-			hash,
-			user.FirstName,
-			user.LastName,
-		}
-	} else if user.UserType == "Organisation" {
-		query = `INSERT INTO User (UserType, Email, PasswordHash, OrganisationName, Category)
-		         VALUES (?, ?, ?, ?, ?)`
-		args = []interface{}{
-			user.UserType,
-			user.Email,
-			hash,
-			user.OrganisationName,
-			user.Category,
-		}
-	} else {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user type"})
-		return
+	query = `INSERT INTO User (UserTypeId, Email, PasswordHash, Name )
+				VALUES (?, ?, ?, ?)`
+	args = []interface{}{
+		user.UserTypeId,
+		user.Email,
+		hash,
+		user.Name,
 	}
 
 	// Execute the query
@@ -89,7 +76,7 @@ func GeneratePasswordHash(password string) (string, error) {
 	return encodedHash, nil
 }
 
-var jwtSecret = []byte("a98c46ee53a279e26f583bae2393d50c5b3c8cef0d4d8eec27171e25132841c1")
+var jwtSecret = []byte(os.Getenv("JWT_SECRET"))
 
 func Login(c *gin.Context) {
 	var user models.User
