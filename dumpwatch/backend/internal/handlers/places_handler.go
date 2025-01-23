@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -139,4 +140,69 @@ func CreateReportWithPlaceDetails(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Report created successfully"})
+}
+
+func GetUserPlaceDetails(c *gin.Context) {
+	userIdParam := c.Param("userId")
+	userId, err := strconv.Atoi(userIdParam)
+	if err != nil {
+		log.Printf("Invalid userId: %v", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid userId"})
+		return
+	}
+
+	if config.DB == nil {
+		log.Println("Database connection is nil")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database connection error"})
+		return
+	}
+
+	query := `
+		SELECT upd.UserPlaceDetailsId, upd.UserId, upd.PlaceDetailId, upd.CreatedDate,
+		       pd.PlaceId, pd.PostalCode, pd.Latitude, pd.Longitude, pd.Accuracy,
+		       p.CountryCode, p.PlaceName
+		FROM UserPlaceDetail upd
+		JOIN PlaceDetails pd ON upd.PlaceDetailId = pd.PlaceDetailId
+		JOIN Place p ON pd.PlaceId = p.PlaceId
+		WHERE upd.UserId = ?
+	`
+
+	rows, err := config.DB.Query(query, userId)
+	if err != nil {
+		log.Printf("Database query error: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch user place details"})
+		return
+	}
+	defer rows.Close()
+
+	var userPlaceDetails []models.UserPlaceDetail
+	for rows.Next() {
+		var userPlaceDetail models.UserPlaceDetail
+		err := rows.Scan(
+			&userPlaceDetail.UserPlaceDetailsId,
+			&userPlaceDetail.UserId,
+			&userPlaceDetail.PlaceDetailId,
+			&userPlaceDetail.CreatedDate,
+			&userPlaceDetail.PlaceDetail.PlaceId,
+			&userPlaceDetail.PlaceDetail.PostalCode,
+			&userPlaceDetail.PlaceDetail.Latitude,
+			&userPlaceDetail.PlaceDetail.Longitude,
+			&userPlaceDetail.PlaceDetail.Accuracy,
+			&userPlaceDetail.PlaceDetail.Place.CountryCode,
+			&userPlaceDetail.PlaceDetail.Place.PlaceName,
+		)
+		if err != nil {
+			log.Printf("Error scanning row: %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to parse user place details"})
+			return
+		}
+		userPlaceDetails = append(userPlaceDetails, userPlaceDetail)
+	}
+
+	if len(userPlaceDetails) == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"message": "No user place details found for the given userId"})
+		return
+	}
+
+	c.JSON(http.StatusOK, userPlaceDetails)
 }

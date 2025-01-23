@@ -11,11 +11,13 @@ func RegisterRoutes(router *gin.Engine) {
 	router.POST("/create-report", handlers.CreateReport)
 	router.GET("/get-reports", handlers.GetAllReports)
 	router.GET("/get-report-by-reportId/:reportId", handlers.GetReportById)
+	router.GET("/get-reports-by-place-details-id/:placeDetailsId", handlers.GetReportsByPlaceDetailsId)
 
 	// Place routes
 	router.GET("/get-places", handlers.GetAllPlaces)
 	router.GET("/get-place-by-coordinates", handlers.GetPlaceByCoordinates)
 	router.GET("/get-place-details/:placeId", handlers.GetPlaceDetails)
+	router.GET("/get-user-place-details/:userId", handlers.GetUserPlaceDetails)
 
 	// Comments routes
 	router.GET("/get-comments-by-reportId/:reportId", handlers.GetCommentsByReportId)

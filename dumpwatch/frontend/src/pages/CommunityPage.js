@@ -9,15 +9,18 @@ const CommunityPage = () => {
     const [error, setError] = useState(null);
     const [showImages, setShowImages] = useState(false);
 
+    const userId = localStorage.getItem('userId');
+
     useEffect(() => {
         fetchReports('all');
     }, []);
 
-    const fetchReports = async (communityId) => {
+    const fetchReports = async (placeDetailId) => {
         setLoading(true);
         try {
-            const endpoint = communityId === 'all' ? '/get-reports' : `/get-reports/${communityId}`;
+            const endpoint = placeDetailId === 'all' ? '/get-reports' : `/get-reports-by-place-details-id/${placeDetailId}`;
             const response = await axios.get(endpoint);
+            console.log('response', response.data);
             setReports(response.data);
         } catch (err) {
             setError('Failed to load reports');
@@ -35,7 +38,7 @@ const CommunityPage = () => {
                 <div className="flex justify-center mb-4">
                     <button
                         onClick={() => setShowImages(!showImages)}
-                        className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                        className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2"
                     >
                         {showImages ? 'Hide Images' : 'Show Images'}
                     </button>
@@ -48,17 +51,17 @@ const CommunityPage = () => {
                     {reports.map((report) => (
                         <div key={report.ReportId} className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transform transition-transform hover:scale-105">
                             {showImages && (
-                                <img src={`http://localhost:8080/${report.ImageURL}`} alt="Posted Illegal Dump" className="w-full h-48 object-cover" />
+                                <img src={`http://localhost:8080/${report.imageUrl}`} alt="Posted Illegal Dump" className="w-full h-48 object-cover" />
                             )}
                             <div className="p-4">
                                 <p className="text-sm text-gray-600 mb-2">
-                                    Created on: {new Date(report.CreatedDate).toLocaleDateString()}
+                                    Created on: {new Date(report.createdDate).toLocaleDateString()}
                                 </p>
                                 <p className="text-gray-800 font-bold mb-2">
-                                    Description: {report.Description}
+                                    Description: {report.description}
                                 </p>
                                 <p className="text-sm text-gray-600">
-                                    Latitude: {report.Latitude}, Longitude: {report.Longitude}
+                                    Community: {report.place.placeName}
                                 </p>
                             </div>
                         </div>

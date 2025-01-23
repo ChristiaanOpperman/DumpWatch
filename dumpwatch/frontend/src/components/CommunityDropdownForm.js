@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from '../api/api';
 
 const CommunityDropdown = ({ onSelectCommunity }) => {
-    const [communities, setCommunities] = useState([]);
+    const [userCommunities, setUserCommunities] = useState([]);
     const [selectedCommunity, setSelectedCommunity] = useState('all');
     const [showForm, setShowForm] = useState(false);
     const [useCurrentLocation, setUseCurrentLocation] = useState(true);
@@ -13,18 +13,22 @@ const CommunityDropdown = ({ onSelectCommunity }) => {
     const [selectedPlace, setSelectedPlace] = useState('');
 
     useEffect(() => {
-        // fetchCommunities();
+        fetchUserPlaceDetails();
         fetchPlaces();
     }, []);
 
-    // const fetchCommunities = async () => {
-    //     try {
-    //         const response = await axios.get('/get-user-places');
-    //         setCommunities(response.data);
-    //     } catch (error) {
-    //         console.error('Error fetching communities:', error);
-    //     }
-    // };
+    const userId = localStorage.getItem('userId');
+
+    const fetchUserPlaceDetails = () => {
+        axios.get(`/get-user-place-details/${userId}`)
+            .then((response) => {
+                console.log('get-user-place-detailsn response', response.data);
+                setUserCommunities(response.data);
+            })
+            .catch((err) => {
+                console.error('Failed to load user place details');
+            });
+    }
 
     const fetchPlaces = async () => {
         try {
@@ -80,7 +84,7 @@ const CommunityDropdown = ({ onSelectCommunity }) => {
                 className="w-full p-3 border rounded-lg"
             >
                 <option value="all">All Communities</option>
-                {communities.map((comm) => (
+                {userCommunities.map((comm) => (
                     <option key={comm.PlaceDetailId} value={comm.PlaceDetailId}>
                         {comm.PlaceName} - {comm.PostalCode}
                     </option>

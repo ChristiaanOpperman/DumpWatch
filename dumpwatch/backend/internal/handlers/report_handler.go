@@ -31,7 +31,6 @@ func CreateReport(c *gin.Context) {
 		return
 	}
 
-
 	file, err := c.FormFile("image")
 	if err != nil {
 		log.Printf("FormFile error: %v", err)
@@ -76,8 +75,13 @@ func GetAllReports(c *gin.Context) {
 	}
 
 	rows, err := config.DB.Query(`
-		SELECT ReportId, CreatedById, CreatedDate, LastModifiedDate, Description, PlaceDetailId, ImageURL
-		FROM Report;
+		SELECT r.ReportId, r.CreatedById, r.CreatedDate, r.LastModifiedDate, r.Description, r.PlaceDetailId, r.ImageURL,
+				pd.PlaceId, pd.PostalCode, pd.Latitude, pd.Longitude, pd.Accuracy,
+				p.PlaceName
+		FROM Report r
+		JOIN PlaceDetails pd ON r.PlaceDetailId = pd.PlaceDetailId
+		JOIN Place p ON pd.PlaceId = p.PlaceId
+		;
 	`)
 	if err != nil {
 		log.Printf("Database get report error: %v", err)
@@ -98,7 +102,14 @@ func GetAllReports(c *gin.Context) {
 			&report.Description,
 			&report.PlaceDetailId,
 			&report.ImageURL,
+			&report.Place.PlaceId,
+			&report.PlaceDetail.PostalCode,
+			&report.PlaceDetail.Latitude,
+			&report.PlaceDetail.Longitude,
+			&report.PlaceDetail.Accuracy,
+			&report.Place.PlaceName,
 		)
+
 		if err != nil {
 			log.Printf("Error scanning row: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to parse reports"})
@@ -109,6 +120,73 @@ func GetAllReports(c *gin.Context) {
 
 	if len(reports) == 0 {
 		log.Println("No reports found")
+	}
+
+	c.JSON(http.StatusOK, reports)
+}
+
+func GetReportsByPlaceDetailsId(c *gin.Context) {
+	placeDetailsIdParam := c.Param("placeDetailsId")
+	placeDetailsId, err := strconv.Atoi(placeDetailsIdParam)
+	if err != nil {
+		log.Printf("Invalid placeDetailsId: %v", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid placeDetailsId"})
+		return
+	}
+
+	if config.DB == nil {
+		log.Println("Database connection is nil")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database connection error"})
+		return
+	}
+
+	query := `
+		SELECT r.ReportId, r.CreatedById, r.CreatedDate, r.LastModifiedDate, r.Description, r.ImageURL,
+		       pd.PlaceDetailId, pd.PlaceId, pd.PostalCode, pd.Latitude, pd.Longitude, pd.Accuracy,
+		       p.PlaceName
+		FROM Report r
+		JOIN PlaceDetails pd ON r.PlaceDetailId = pd.PlaceDetailId
+		JOIN Place p ON pd.PlaceId = p.PlaceId
+		WHERE r.PlaceDetailId = ?
+	`
+
+	rows, err := config.DB.Query(query, placeDetailsId)
+	if err != nil {
+		log.Printf("Database query error: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch reports"})
+		return
+	}
+	defer rows.Close()
+
+	var reports []models.Report
+	for rows.Next() {
+		var report models.Report
+		err := rows.Scan(
+			&report.ReportId,
+			&report.CreatedById,
+			&report.CreatedDate,
+			&report.LastModifiedDate,
+			&report.Description,
+			&report.ImageURL,
+			&report.PlaceDetail.PlaceDetailId,
+			&report.PlaceDetail.PlaceId,
+			&report.PlaceDetail.PostalCode,
+			&report.PlaceDetail.Latitude,
+			&report.PlaceDetail.Longitude,
+			&report.PlaceDetail.Accuracy,
+			&report.Place.PlaceName,
+		)
+		if err != nil {
+			log.Printf("Error scanning row: %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to parse reports"})
+			return
+		}
+		reports = append(reports, report)
+	}
+
+	if len(reports) == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"message": "No reports found for the given PlaceDetailId"})
+		return
 	}
 
 	c.JSON(http.StatusOK, reports)
