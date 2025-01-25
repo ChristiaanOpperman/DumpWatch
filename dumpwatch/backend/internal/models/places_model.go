@@ -9,6 +9,7 @@ type Place struct {
 type PlaceDetail struct {
 	PlaceDetailId int     `json:"placeDetailId"`
 	PlaceId       int     `json:"placeId"`
+	PlaceName     string  `json:"placeName"`
 	PostalCode    string  `json:"postalCode"`
 	Latitude      float64 `json:"latitude"`
 	Longitude     float64 `json:"longitude"`

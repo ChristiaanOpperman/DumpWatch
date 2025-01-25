@@ -39,14 +39,21 @@ const CreateReportForm = () => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 async (position) => {
-                    setLatitude(position.coords.latitude.toString());
-                    setLongitude(position.coords.longitude.toString());
+                    const lat = position.coords.latitude.toFixed(4);
+                    const lng = position.coords.longitude.toFixed(4);
+                    setLatitude(lat);
+                    setLongitude(lng);
+                    console.log('Current location:', lat, lng);
+
                     try {
-                        const response = await axios.get(`/get-place-by-coordinates?lat=${position.coords.latitude}&lng=${position.coords.longitude}`);
+                        const response = await axios.get(`/get-place-by-coordinates?lat=${lat}&lng=${lng}`);
+                        console.log('Place details:', response.data);
                         setPlaceId(response.data.placeId);
+                        setPlaceDetailId(response.data.placeDetailId);
                         setPostalCode(response.data.postalCode);
                     } catch (error) {
                         console.error('Error fetching place details:', error);
+                        setMessage('Could not find details for your location.');
                     }
                     setIsRefreshing(false);
                 },
@@ -200,7 +207,7 @@ const CreateReportForm = () => {
                     </div>
                 )}
 
-                {placeDetails && placeDetails.length > 0 && (
+                {!useCurrentLocation && placeDetails && placeDetails.length > 0 && (
                     <div>
                         <label className="block font-bold mb-1">Postal Code:</label>
                         <Select
@@ -208,7 +215,8 @@ const CreateReportForm = () => {
                             value={placeDetails.find((detail) => detail.value === postalCode)}
                             onChange={(selectedOption) => {
                                 setPlaceDetailId(selectedOption.value);
-                                setPostalCode(selectedOption.label)}
+                                setPostalCode(selectedOption.label)
+                            }
                             }
                             placeholder="Select a postal code"
                             className="w-full border p-2 rounded-lg"
@@ -216,6 +224,32 @@ const CreateReportForm = () => {
                         />
                     </div>
                 )}
+
+                {useCurrentLocation && <button
+                    type="button"
+                    onClick={fetchUserLocation}
+                    className="flex items-center justify-center bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-all duration-200 disabled:opacity-50"
+                    disabled={isRefreshing}
+                >
+                    <span>Refresh Location</span>
+                    {isRefreshing ? (<div
+                        className="inline-block ml-2 h-4 w-4 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                        role="status">
+                        <span
+                            className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]"
+                        >Loading...</span>
+                    </div>) :
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="size-4 ml-2"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                        </svg>}
+                </button>}
 
                 <div>
                     <label className="block font-bold mb-1">Image:</label>

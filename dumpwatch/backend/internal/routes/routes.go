@@ -18,6 +18,7 @@ func RegisterRoutes(router *gin.Engine) {
 	router.GET("/get-place-by-coordinates", handlers.GetPlaceByCoordinates)
 	router.GET("/get-place-details/:placeId", handlers.GetPlaceDetails)
 	router.GET("/get-user-place-details/:userId", handlers.GetUserPlaceDetails)
+	router.POST("/create-user-place-detail", handlers.CreateUserPlaceDetail)
 
 	// Comments routes
 	router.GET("/get-comments-by-reportId/:reportId", handlers.GetCommentsByReportId)

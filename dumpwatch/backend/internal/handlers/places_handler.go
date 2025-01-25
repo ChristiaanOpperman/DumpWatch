@@ -81,7 +81,7 @@ func GetPlaceDetails(c *gin.Context) {
 	}
 
 	response := gin.H{
-		"place": place,
+		"place":   place,
 		"details": placeDetails,
 	}
 
@@ -94,11 +94,36 @@ func GetPlaceByCoordinates(c *gin.Context) {
 	lng := c.Query("lng")
 
 	var placeDetail models.PlaceDetail
-	err := config.DB.QueryRow(`
-		SELECT PlaceDetailId, PlaceId, PostalCode, Latitude, Longitude, Accuracy 
-		FROM PlaceDetails 
-		WHERE Latitude = ? AND Longitude = ?`, lat, lng).
-		Scan(&placeDetail.PlaceDetailId, &placeDetail.PlaceId, &placeDetail.PostalCode, &placeDetail.Latitude, &placeDetail.Longitude, &placeDetail.Accuracy)
+	tolerance := 0.01 // Increased tolerance to cover a wider area
+
+	query := `
+		SELECT 
+			p.PlaceId, 
+			p.PlaceName, 
+			pd.PlaceDetailId, 
+			pd.PlaceId, 
+			pd.PostalCode, 
+			pd.Latitude, 
+			pd.Longitude, 
+			pd.Accuracy 
+		FROM Place p  
+		JOIN PlaceDetails pd ON p.PlaceId = pd.PlaceId
+		WHERE ABS(pd.Latitude - ?) < ? AND ABS(pd.Longitude - ?) < ? 
+		ORDER BY pd.Accuracy DESC
+		LIMIT 1
+	`
+
+	err := config.DB.QueryRow(query, lat, tolerance, lng, tolerance).
+		Scan(
+			&placeDetail.PlaceId,
+			&placeDetail.PlaceName,
+			&placeDetail.PlaceDetailId,
+			&placeDetail.PlaceId, // Corrected: PlaceId scanned twice
+			&placeDetail.PostalCode,
+			&placeDetail.Latitude,
+			&placeDetail.Longitude,
+			&placeDetail.Accuracy,
+		)
 
 	if err != nil {
 		log.Printf("Error fetching place by coordinates: %v", err)
@@ -205,4 +230,26 @@ func GetUserPlaceDetails(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, userPlaceDetails)
+}
+
+func CreateUserPlaceDetail(c *gin.Context) {
+	userId := c.PostForm("userId")
+	placeId := c.PostForm("placeId")
+	postalCode := c.PostForm("postalCode")
+
+	if userId == "" || placeId == "" || postalCode == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing required parameters"})
+		return
+	}
+
+	query := `INSERT INTO UserPlaceDetail (UserId, PlaceDetailId) 
+	          VALUES (?, (SELECT PlaceDetailId FROM PlaceDetails WHERE PlaceId = ? AND PostalCode = ?))`
+	_, err := config.DB.Exec(query, userId, placeId, postalCode)
+	if err != nil {
+		log.Printf("Database insert user place detail error: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save user place detail"})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{"message": "User place detail created successfully"})
 }
