@@ -89,13 +89,12 @@ func GetPlaceDetails(c *gin.Context) {
 }
 
 // Get place details by latitude and longitude
+// Get place details by latitude and longitude
 func GetPlaceByCoordinates(c *gin.Context) {
 	lat := c.Query("lat")
 	lng := c.Query("lng")
 
-	var placeDetail models.PlaceDetail
-	tolerance := 0.01 // Increased tolerance to cover a wider area
-
+	tolerance := 0.025
 	query := `
 		SELECT 
 			p.PlaceId, 
@@ -108,13 +107,21 @@ func GetPlaceByCoordinates(c *gin.Context) {
 			pd.Accuracy 
 		FROM Place p  
 		JOIN PlaceDetails pd ON p.PlaceId = pd.PlaceId
-		WHERE ABS(pd.Latitude - ?) < ? AND ABS(pd.Longitude - ?) < ? 
-		ORDER BY pd.Accuracy DESC
-		LIMIT 1
-	`
+		WHERE ABS(pd.Latitude - ?) < ? AND ABS(pd.Longitude - ?) < ?`
 
-	err := config.DB.QueryRow(query, lat, tolerance, lng, tolerance).
-		Scan(
+	rows, err := config.DB.Query(query, lat, tolerance, lng, tolerance)
+	if err != nil {
+		log.Printf("Error fetching places by coordinates: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database query failed"})
+		return
+	}
+	defer rows.Close()
+
+	var places []models.PlaceDetail
+
+	for rows.Next() {
+		var placeDetail models.PlaceDetail
+		err := rows.Scan(
 			&placeDetail.PlaceId,
 			&placeDetail.PlaceName,
 			&placeDetail.PlaceDetailId,
@@ -124,15 +131,21 @@ func GetPlaceByCoordinates(c *gin.Context) {
 			&placeDetail.Longitude,
 			&placeDetail.Accuracy,
 		)
+		if err != nil {
+			log.Printf("Error scanning row: %v", err)
+			continue
+		}
+		places = append(places, placeDetail)
+	}
 
-	if err != nil {
-		log.Printf("Error fetching place by coordinates: %v", err)
-		c.JSON(http.StatusNotFound, gin.H{"error": "No place found for provided coordinates"})
+	if len(places) == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "No places found for provided coordinates"})
 		return
 	}
 
-	c.JSON(http.StatusOK, placeDetail)
+	c.JSON(http.StatusOK, places)
 }
+
 
 // Create report with place details
 func CreateReportWithPlaceDetails(c *gin.Context) {
@@ -186,7 +199,7 @@ func GetUserPlaceDetails(c *gin.Context) {
 		SELECT upd.UserPlaceDetailsId, upd.UserId, upd.PlaceDetailId, upd.CreatedDate,
 		       pd.PlaceId, pd.PostalCode, pd.Latitude, pd.Longitude, pd.Accuracy,
 		       p.CountryCode, p.PlaceName
-		FROM UserPlaceDetail upd
+		FROM UserPlaceDetails upd
 		JOIN PlaceDetails pd ON upd.PlaceDetailId = pd.PlaceDetailId
 		JOIN Place p ON pd.PlaceId = p.PlaceId
 		WHERE upd.UserId = ?
@@ -200,9 +213,9 @@ func GetUserPlaceDetails(c *gin.Context) {
 	}
 	defer rows.Close()
 
-	var userPlaceDetails []models.UserPlaceDetail
+	var userPlaceDetails []models.UserPlaceDetails
 	for rows.Next() {
-		var userPlaceDetail models.UserPlaceDetail
+		var userPlaceDetail models.UserPlaceDetails
 		err := rows.Scan(
 			&userPlaceDetail.UserPlaceDetailsId,
 			&userPlaceDetail.UserId,
@@ -242,7 +255,7 @@ func CreateUserPlaceDetail(c *gin.Context) {
 		return
 	}
 
-	query := `INSERT INTO UserPlaceDetail (UserId, PlaceDetailId) 
+	query := `INSERT INTO UserPlaceDetails (UserId, PlaceDetailId) 
 	          VALUES (?, (SELECT PlaceDetailId FROM PlaceDetails WHERE PlaceId = ? AND PostalCode = ?))`
 	_, err := config.DB.Exec(query, userId, placeId, postalCode)
 	if err != nil {

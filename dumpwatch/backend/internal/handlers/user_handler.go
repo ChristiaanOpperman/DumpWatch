@@ -71,7 +71,7 @@ func GeneratePasswordHash(password string) (string, error) {
 	}
 
 	hash := argon2.IDKey([]byte(password), salt, 1, 64*1024, 4, 32)
-	// Encode salt and hash together
+	
 	encodedHash := base64.StdEncoding.EncodeToString(append(salt, hash...))
 	return encodedHash, nil
 }

@@ -17,7 +17,7 @@ type PlaceDetail struct {
 	Place         Place   `json:"place"`
 }
 
-type UserPlaceDetail struct {
+type UserPlaceDetails struct {
 	UserPlaceDetailsId int         `json:"userPlaceDetailsId"`
 	UserId             int         `json:"userId"`
 	PlaceDetailId      int         `json:"placeDetailId"`

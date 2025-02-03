@@ -13,42 +13,30 @@ const CommunityDropdown = ({ onSelectCommunity }) => {
     const [postalCode, setPostalCode] = useState('');
     const [isRefreshing, setIsRefreshing] = useState('');
     const [placeOptions, setPlaceOptions] = useState([]);
-    const [selectedPlace, setSelectedPlace] = useState('');
-    const [placeId, setPlaceId] = useState('');
-    const [placeDetailId, setPlaceDetailId] = useState('');
+    const [placeId, setPlaceId] = useState();
     const [message, setMessage] = useState('');
     const userId = localStorage.getItem('userId');
     const [placeDetails, setPlaceDetails] = useState([]);
-    const [places, setPlaces] = useState([]);
-    const [placeName, setPlaceName] = useState('');
 
 
     useEffect(() => {
-        // fetchUserPlaceDetails();
+        getUserCommunities();
         fetchPlaces();
     }, []);
 
     useEffect(() => {
-        if (useCurrentLocation) fetchUserLocation();
+        if (useCurrentLocation) {
+            fetchUserLocation()
+        }
+        else {
+            fetchPlaces()
+        }
     }, [useCurrentLocation]);
-
-    const fetchUserPlaceDetails = () => {
-        axios.get(`/get-user-place-details/${userId}`)
-            .then((response) => {
-                console.log('get-user-place-detailsn response', response.data);
-                setUserCommunities(response.data);
-            })
-            .catch((err) => {
-                console.error('Failed to load user place details');
-            });
-    }
 
     const fetchPlaces = async () => {
         try {
             const response = await axios.get('/get-places');
             let places = response.data;
-            console.log('Places:', places);
-            setPlaces(places);
             const placeOptions = places.map((place) => ({
                 value: place.placeId,
                 label: place.placeName,
@@ -64,7 +52,6 @@ const CommunityDropdown = ({ onSelectCommunity }) => {
             const response = await axios.get(`/get-place-details/${placeId}`);
             let placeDetails = response.data;
             setPlaceDetails(placeDetails.details);
-            console.log('Place details:', placeDetails);
         } catch (error) {
             console.error('Error fetching place details:', error);
         }
@@ -75,19 +62,17 @@ const CommunityDropdown = ({ onSelectCommunity }) => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 async (position) => {
-                    const lat = position.coords.latitude.toFixed(4);
-                    const lng = position.coords.longitude.toFixed(4);
+                    const lat = position.coords.latitude.toFixed(8);
+                    const lng = position.coords.longitude.toFixed(8);
                     setLatitude(lat);
                     setLongitude(lng);
-                    console.log('Current location:', lat, lng);
-
                     try {
                         const response = await axios.get(`/get-place-by-coordinates?lat=${lat}&lng=${lng}`);
-                        console.log('Place details:', response.data);
-                        setPlaceId(response.data.placeId);
-                        setPlaceDetailId(response.data.placeDetailId);
-                        setPostalCode(response.data.postalCode);
-                        setPlaceName(response.data.placeName);
+                        const placeOptions = response.data.map((place) => ({
+                            value: place.placeId,
+                            label: place.placeName
+                        }));
+                        setPlaceOptions(placeOptions);
                     } catch (error) {
                         console.error('Error fetching place details:', error);
                         setMessage('Could not find details for your location.');
@@ -106,18 +91,33 @@ const CommunityDropdown = ({ onSelectCommunity }) => {
         }
     };
 
+    const getUserCommunities = async () => {
+        try {
+            const response = await axios.get(`/get-user-place-details/${userId}`);
+            console.log('User communities:', response.data);
+            setUserCommunities(response.data);
+        } catch (error) {
+            console.error('Error fetching user communities:', error);
+        }
+    };
+
     const handleFormSubmit = async (e) => {
         e.preventDefault();
         const communityData = {
-            placeId: selectedPlace,
+            placeId: placeId,
             postalCode: postalCode,
             userId: userId,
         };
+        const formData = new FormData();
+        Object.keys(communityData).forEach((key) => {
+            formData.append(key, communityData[key]);
+        })
+        console.log('communitydata: ', communityData);
         try {
-            console.log('communityData', communityData);
-            await axios.post('/create-user-place-detail', communityData);
-            // fetchCommunities();
-            console.log('Community added successfully');
+            await axios.post('/create-user-place-detail', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            });
+            getUserCommunities();
             setShowForm(false);
         } catch (error) {
             console.error('Error adding community:', error);
@@ -130,6 +130,7 @@ const CommunityDropdown = ({ onSelectCommunity }) => {
             <select
                 value={selectedCommunity}
                 onChange={(e) => {
+                    console.log('Selected community:', e.target.value);
                     setSelectedCommunity(e.target.value);
                     onSelectCommunity(e.target.value);
                 }}
@@ -137,8 +138,8 @@ const CommunityDropdown = ({ onSelectCommunity }) => {
             >
                 <option value="all">All Communities</option>
                 {userCommunities.map((comm) => (
-                    <option key={comm.PlaceDetailId} value={comm.PlaceDetailId}>
-                        {comm.PlaceName} - {comm.PostalCode}
+                    <option key={comm.placeDetailId} value={comm.placeDetailId}>
+                        {comm.placeDetail.place.placeName} - {comm.placeDetail.postalCode}
                     </option>
                 ))}
             </select>
@@ -170,15 +171,43 @@ const CommunityDropdown = ({ onSelectCommunity }) => {
                             {useCurrentLocation ? 'Use Current Location' : 'Manually Enter Address'}
                         </label>
                     </div>
-                    {useCurrentLocation ? (
+                    {useCurrentLocation && longitude && latitude ? (
                         <>
-                            <div className="mb-4">
-                                <label className="block font-bold">You are at: {placeName} :)</label>
+                            <div>
+                                <label className="block font-bold mb-5">Places Near You:</label>
+                                <Select
+                                    options={placeOptions}
+                                    value={placeOptions.find(option => option.value === placeId)}
+                                    onChange={(selectedOption) => {
+                                        console.log('Selected option:', selectedOption);
+                                        setPlaceId(selectedOption.value);
+                                        fetchPlaceDetails(selectedOption.value);
+                                    }}
+                                    placeholder="Select a place"
+                                    className="w-full border p-2 rounded-lg"
+                                    isSearchable
+                                />
                             </div>
+                            {placeDetails && placeDetails.length > 0 && (
+                                <div>
+                                    <label className="block font-bold mb-1">Postal Code:</label>
+                                    <Select
+                                        options={placeDetails.map((detail) => ({ value: detail.placeDetailId, label: detail.postalCode }))}
+                                        value={placeDetails.find((detail) => detail.value === postalCode)}
+                                        onChange={(selectedOption) => {
+                                            setPostalCode(selectedOption.label)
+                                        }
+                                        }
+                                        placeholder="Select a postal code"
+                                        className="w-full border p-2 rounded-lg"
+                                        isSearchable
+                                    />
+                                </div>
+                            )}
                             <button
                                 type="button"
                                 onClick={fetchUserLocation}
-                                className="flex items-center justify-center bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-all duration-200 disabled:opacity-50"
+                                className="flex items-center justify-center bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-all duration-200 disabled:opacity-50 mt-5"
                                 disabled={isRefreshing}
                             >
                                 <span>Refresh Location</span>
@@ -225,7 +254,6 @@ const CommunityDropdown = ({ onSelectCommunity }) => {
                                         options={placeDetails.map((detail) => ({ value: detail.placeDetailId, label: detail.postalCode }))}
                                         value={placeDetails.find((detail) => detail.value === postalCode)}
                                         onChange={(selectedOption) => {
-                                            setPlaceDetailId(selectedOption.value);
                                             setPostalCode(selectedOption.label)
                                         }
                                         }

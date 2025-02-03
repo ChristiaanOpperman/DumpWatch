@@ -5,35 +5,53 @@ import (
 	"dumpwatch/internal/models"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
 func CreateComment(c *gin.Context) {
 	var comment models.Comment
+
+	// Corrected: Now logging AFTER binding JSON
 	if err := c.ShouldBindJSON(&comment); err != nil {
 		log.Printf("Error parsing JSON: %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
 		return
 	}
 
-	log.Printf("Comment recevied: %+v", comment)
+	log.Printf("Comment received: %+v", comment)
 
-	if comment.Message == "" || comment.CreatedById == 0 || comment.ReportId == 0 {
+
+	if comment.Message == "" || comment.UserId == 0 || comment.ReportId == 0 {
 		log.Println("Missing required fields: message, userId, or reportId")
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing required fields: message, userId, or reportId"})
 		return
 	}	
 
-	query := `INSERT INTO Comment (CreatedById, Message, ReportId) VALUES (?, ?, ?)`
-	_, err := config.DB.Exec(query, comment.CreatedById, comment.Message, comment.ReportId)
+	query := `INSERT INTO Comment (UserId, Message, ReportId) VALUES (?, ?, ?)`
+	result, err := config.DB.Exec(query, comment.UserId, comment.Message, comment.ReportId)
 	if err != nil {
 		log.Printf("Database insert comment error: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save comment"})
 		return
 	}
+	commentId, err := result.LastInsertId()
+	if err != nil {
+		log.Printf("Error retrieving last insert ID: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch comment ID"})
+		return
+	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": "Comment created successfully"})
+	comment.CommentId = int(commentId)
+	comment.CreatedDate = time.Now().Format("2006-01-02 15:04:05")
+
+	log.Printf("Comment successfully created: %+v", comment)
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "Comment created successfully",
+		"comment": comment,
+	})
+
 }
 
 func GetCommentsByReportId(c *gin.Context) {
@@ -41,7 +59,7 @@ func GetCommentsByReportId(c *gin.Context) {
 	log.Printf("Fetching comments for Report ID: %s", reportId)
 
 	rows, err := config.DB.Query(`
-		SELECT CommentId, ReportId, CreatedById, CreatedDate, Message
+		SELECT CommentId, ReportId, UserId, CreatedDate, Message
 		FROM Comment
 		WHERE ReportId = ?;
 	`, reportId)
@@ -58,7 +76,7 @@ func GetCommentsByReportId(c *gin.Context) {
 		if err := rows.Scan(
 			&comment.CommentId,
 			&comment.ReportId,
-			&comment.CreatedById,
+			&comment.UserId,
 			&comment.CreatedDate,
 			&comment.Message); err != nil {
 			log.Printf("Error scanning row: %v", err)

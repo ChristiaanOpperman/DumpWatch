@@ -12,13 +12,12 @@ const ViewReportPage = () => {
     const [commentInput, setCommentInput] = useState('');
     const [posting, setPosting] = useState(false);
 
-    const userId = '85e50cfa-b63b-11ef-bb4c-f8e9a5819770';
-
-
+    const userId = localStorage.getItem('userId');
 
     const fetchReport = async () => {
         try {
             const response = await axios.get(`/get-report-by-reportId/${reportId}`);
+            console.log('fetching report: ', response.data);
             setReport(response.data);
         } catch (err) {
             console.error('Error fetching report:', err);
@@ -42,28 +41,33 @@ const ViewReportPage = () => {
         setPosting(true);
 
         try {
-            console.log('CreatedById: ', userId);
+            console.log('UserId: ', userId);
             const newComment = {
-                Message: commentInput,
-                CreatedById: userId,
-                ReportId: reportId,
+                message: commentInput,
+                userId: Number(userId), // Convert to number to match backend userId,
+                reportId: Number(reportId),
             };
+
             console.log('Posting comment:', newComment);
-            await axios.post('/create-comment', newComment);
+            const response = await axios.post('/create-comment', newComment);
 
-            setComments(
-                [
-                    ...comments,
+            if (response.data.comment) {
+                const createdComment = response.data.comment;
+
+                setComments(prevComments => [
+                    ...prevComments,
                     {
-                        CommentId: Date.now(),
-                        ReportId: reportId,
-                        CreatedById: newComment.CreatedById,
-                        CreatedDate: new Date().toISOString(),
-                        Message: newComment.Message,
+                        CommentId: createdComment.commentId, // Use ID from backend
+                        ReportId: createdComment.reportId,
+                        UserId: createdComment.userId,
+                        CreatedDate: createdComment.createdDate, // Use real timestamp
+                        Message: createdComment.message,
                     }
-                ]
-            );
-
+                ]);
+            } else {
+                console.error('Comment creation failed: No valid response from backend');
+                alert('Failed to post comment. Please try again.');
+            }
 
             setCommentInput('');
         } catch (err) {
@@ -109,20 +113,20 @@ const ViewReportPage = () => {
             <div className="bg-gray-200 p-6">
                 {report && (
                     <div className="bg-white rounded-lg shadow-md mb-6">
-                        {report.ImageURL && (
+                        {report.imageUrl && (
                             <img
-                                src={`http://localhost:8080/${report.ImageURL}`}
+                                src={`http://localhost:8080/${report.imageUrl}`}
                                 alt="Reported Post"
                                 className="w-full h-64 object-cover rounded-t-lg"
                             />
                         )}
                         <div className="p-6">
                             <h1 className="text-2xl font-bold mb-4">Report Details</h1>
-                            <p className="text-gray-800 font-bold mb-2">Description: {report.Description}</p>
+                            <p className="text-gray-800 font-bold mb-2">Description: {report.description}</p>
                             <p className="text-sm text-gray-600 mb-2">
-                                Created on: {new Date(report.CreatedDate).toLocaleDateString()}
+                                Created on: {new Date(report.createdDate).toLocaleDateString()}
                             </p>
-                            <p className="text-sm text-gray-600">Latitude: {report.Latitude}, Longitude: {report.Longitude}</p>
+                            <p className="text-sm text-gray-600">{report.place.placeName}</p>
                         </div>
                     </div>
                 )}
@@ -155,7 +159,7 @@ const ViewReportPage = () => {
                             <div key={comment.CommentId} className="mb-4 border-b border-gray-300 pb-4">
                                 <p className="text-gray-800 mb-2">{comment.Message}</p>
                                 <p className="text-sm text-gray-600">
-                                    Created by: {comment.CreatedById} on {new Date(comment.CreatedDate).toLocaleDateString()}
+                                    Created by: {comment.UserId} on {new Date(comment.CreatedDate).toLocaleDateString()}
                                 </p>
                             </div>
                         ))

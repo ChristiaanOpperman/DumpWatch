@@ -127,6 +127,9 @@ func GetAllReports(c *gin.Context) {
 
 func GetReportsByPlaceDetailsId(c *gin.Context) {
 	placeDetailsIdParam := c.Param("placeDetailsId")
+	// print details
+	fmt.Printf("placeDetailsIdParam: %s", placeDetailsIdParam)
+
 	placeDetailsId, err := strconv.Atoi(placeDetailsIdParam)
 	if err != nil {
 		log.Printf("Invalid placeDetailsId: %v", err)
@@ -158,8 +161,13 @@ func GetReportsByPlaceDetailsId(c *gin.Context) {
 	}
 	defer rows.Close()
 
+	log.Println("Query executed successfully, checking results...")
+
 	var reports []models.Report
+	rowCount := 0
+
 	for rows.Next() {
+		rowCount++
 		var report models.Report
 		err := rows.Scan(
 			&report.ReportId,
@@ -178,14 +186,16 @@ func GetReportsByPlaceDetailsId(c *gin.Context) {
 		)
 		if err != nil {
 			log.Printf("Error scanning row: %v", err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to parse reports"})
-			return
+			continue // Don't return, just skip this row
 		}
 		reports = append(reports, report)
 	}
 
+	log.Printf("Total rows retrieved: %d", rowCount)
+
 	if len(reports) == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"message": "No reports found for the given PlaceDetailId"})
+		log.Println("No reports found for the given PlaceDetailId")
+		c.JSON(http.StatusOK, []models.Report{})
 		return
 	}
 
@@ -202,9 +212,13 @@ func GetReportById(c *gin.Context) {
 	}
 
 	row := config.DB.QueryRow(`
-		SELECT ReportId, CreatedById, CreatedDate, LastModifiedDate, Description, PlaceDeetailId, ImageURL
-		FROM Report
-		WHERE ReportId = ?;
+		SELECT r.ReportId, r.CreatedById, r.CreatedDate, r.LastModifiedDate, r.Description, r.ImageURL,
+		       pd.PlaceDetailId, pd.PlaceId, pd.PostalCode, pd.Latitude, pd.Longitude, pd.Accuracy,
+		       p.PlaceName
+		FROM Report r
+		JOIN PlaceDetails pd ON r.PlaceDetailId = pd.PlaceDetailId
+		JOIN Place p ON pd.PlaceId = p.PlaceId
+		WHERE r.ReportId = ?
 	`, reportId)
 
 	var report models.Report
@@ -215,8 +229,14 @@ func GetReportById(c *gin.Context) {
 		&report.CreatedDate,
 		&report.LastModifiedDate,
 		&report.Description,
-		&report.PlaceDetailId,
 		&report.ImageURL,
+		&report.PlaceDetail.PlaceDetailId,
+		&report.PlaceDetail.PlaceId,
+		&report.PlaceDetail.PostalCode,
+		&report.PlaceDetail.Latitude,
+		&report.PlaceDetail.Longitude,
+		&report.PlaceDetail.Accuracy,
+		&report.Place.PlaceName,
 	)
 	if err != nil {
 		if err.Error() == "sql: no rows in result set" {

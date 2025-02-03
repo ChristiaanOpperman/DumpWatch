@@ -3,10 +3,10 @@ export const isAuthenticated = () => {
     if (!token) return false;
 
     try {
-        const payload = JSON.parse(atob(token.split('.')[1])); // Decode the token
-        const isExpired = payload.exp * 1000 < Date.now(); // Compare expiry in milliseconds
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const isExpired = payload.exp * 1000 < Date.now();
         return !isExpired;
     } catch (e) {
-        return false; // Invalid token
+        return false;
     }
 };

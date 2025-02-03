@@ -35,7 +35,7 @@ const Home = () => {
                             </li>
                         </ul>
                         <button
-                            onClick={() => setShowSteps(false)} // Hide steps on click
+                            onClick={() => setShowSteps(false)} 
                             className="mt-4 bg-green-700 text-white py-2 px-4 rounded-lg shadow hover:bg-green-800 transition"
                         >
                             Got it!
