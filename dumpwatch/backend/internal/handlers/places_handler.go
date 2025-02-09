@@ -117,7 +117,7 @@ func GetPlaceByCoordinates(c *gin.Context) {
 	}
 	defer rows.Close()
 
-	var places []models.PlaceDetail
+	var places = make([]models.PlaceDetail, 0)
 
 	for rows.Next() {
 		var placeDetail models.PlaceDetail
@@ -138,10 +138,10 @@ func GetPlaceByCoordinates(c *gin.Context) {
 		places = append(places, placeDetail)
 	}
 
-	if len(places) == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"error": "No places found for provided coordinates"})
-		return
-	}
+	// if len(places) == 0 {
+	// 	c.JSON(http.StatusNotFound, gin.H{"error": "No places found for provided coordinates"})
+	// 	return
+	// }
 
 	c.JSON(http.StatusOK, places)
 }

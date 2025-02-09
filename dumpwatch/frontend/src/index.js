@@ -10,14 +10,14 @@ root.render(
   </React.StrictMode>
 );
 
-// if ('serviceWorker' in navigator) {
-//   window.addEventListener('load', () => {
-//     navigator.serviceWorker.register('/service-worker.js')
-//       .then((registration) => {
-//         console.log('Service Worker registered successfully:', registration.scope);
-//       })
-//       .catch((error) => {
-//         console.log('Service Worker registration failed:', error);
-//       });
-//   });
-// }
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').then(reg => {
+      console.log('[Service Worker] Registered:', reg);
+  });
+
+  navigator.serviceWorker.addEventListener('message', (event) => {
+      if (event.data && event.data.type === 'offline-alert') {
+          alert('You are offline, but cached content is being served.');
+      }
+  });
+}

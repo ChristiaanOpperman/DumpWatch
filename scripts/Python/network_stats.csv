@@ -1,0 +1,14 @@
+URL,Method,Status,Size (KB),Time (ms),Content Type
+http://localhost:8080/login,OPTIONS,200,-0.2236328125,0.9590000001997687,x-unknown
+http://localhost:8080/login,OPTIONS,200,-0.2236328125,0.6550000002862653,x-unknown
+https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js,GET,200,0.0,1.9080000000143191,application/javascript
+http://127.0.0.1:23119/connector/ping,POST,0,-0.0009765625,0.0,x-unknown
+http://127.0.0.1:23119/connector/ping,POST,0,-0.0009765625,0.0,x-unknown
+http://127.0.0.1:23119/connector/ping,POST,0,-0.0009765625,0.0,x-unknown
+http://127.0.0.1:23119/connector/ping,POST,0,-0.0009765625,0.0,x-unknown
+http://127.0.0.1:23119/connector/ping,POST,0,-0.0009765625,0.0,x-unknown
+http://127.0.0.1:23119/connector/ping,POST,0,-0.0009765625,0.0,x-unknown
+http://127.0.0.1:23119/connector/ping,POST,0,-0.0009765625,0.0,x-unknown
+http://127.0.0.1:23119/connector/ping,POST,0,-0.0009765625,0.0,x-unknown
+ws://localhost:3000/ws,GET,101,-0.1259765625,23.175000000264845,x-unknown
+http://localhost:8080/login,OPTIONS,200,-0.2236328125,0.6460000001696171,x-unknown

@@ -104,7 +104,10 @@ const CreateReportForm = () => {
         try {
             const response = await axios.get(`/get-place-details/${placeId}`);
             let placeDetails = response.data;
+            console.log('Place details:', placeDetails);
             setPlaceDetails(placeDetails.details);
+            console.log('placeDetails.details[0].placeDetailId', placeDetails.details[0].placeDetailId);
+            // setPlaceDetailId(placeDetails.detais[0].placeDetailId);
             console.log('Place details:', placeDetails);
         } catch (error) {
             console.error('Error fetching place details:', error);
@@ -175,7 +178,7 @@ const CreateReportForm = () => {
             if (imageInputRef.current) imageInputRef.current.value = '';
         } catch (error) {
             console.error('Post submission error:', error);
-            setMessage(error.response?.data || 'Failed to upload post. Please try again.');
+            setMessage(error.response?.data.error || 'Failed to upload post. Please try again.');
         }
     };
 
@@ -241,6 +244,7 @@ const CreateReportForm = () => {
                                     value={placeDetails.find((detail) => detail.value === postalCode)}
                                     onChange={(selectedOption) => {
                                         setPostalCode(selectedOption.label)
+                                        setPlaceDetailId(selectedOption.value);
                                     }
                                     }
                                     placeholder="Select a postal code"
@@ -356,7 +360,7 @@ const CreateReportForm = () => {
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         className="w-full border border-gray-300 rounded-lg p-2 min-h-32"
-                        required
+                        // required
                     ></textarea>
                 </div>
 

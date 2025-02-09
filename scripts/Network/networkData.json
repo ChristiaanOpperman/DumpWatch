@@ -1,0 +1,30 @@
+[
+  {
+    "url": "http://localhost:3000/",
+    "method": "GET",
+    "type": "document",
+    "timestamp": "2025-02-09T12:21:01.175Z"
+  },
+  {
+    "url": "http://localhost:3000/",
+    "method": "GET",
+    "type": "document",
+    "status": 200,
+    "size": "Unknown",
+    "timestamp": "2025-02-09T12:21:01.327Z"
+  },
+  {
+    "url": "http://localhost:3000/static/js/bundle.js",
+    "method": "GET",
+    "type": "script",
+    "timestamp": "2025-02-09T12:21:01.330Z"
+  },
+  {
+    "url": "http://localhost:3000/static/js/bundle.js",
+    "method": "GET",
+    "type": "script",
+    "status": 200,
+    "size": "Unknown",
+    "timestamp": "2025-02-09T12:21:01.438Z"
+  }
+]

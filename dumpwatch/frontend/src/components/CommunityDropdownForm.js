@@ -94,6 +94,7 @@ const CommunityDropdown = ({ onSelectCommunity }) => {
     const getUserCommunities = async () => {
         try {
             const response = await axios.get(`/get-user-place-details/${userId}`);
+            console.log('User communities:', response);
             setUserCommunities(Array.isArray(response.data) ? response.data : []);
         } catch (error) {
             console.error('Error fetching user communities:', error);
