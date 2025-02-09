@@ -213,7 +213,7 @@ func GetUserPlaceDetails(c *gin.Context) {
 	}
 	defer rows.Close()
 
-	var userPlaceDetails []models.UserPlaceDetails
+	userPlaceDetails := make([]models.UserPlaceDetails, 0)
 	for rows.Next() {
 		var userPlaceDetail models.UserPlaceDetails
 		err := rows.Scan(
@@ -235,11 +235,6 @@ func GetUserPlaceDetails(c *gin.Context) {
 			return
 		}
 		userPlaceDetails = append(userPlaceDetails, userPlaceDetail)
-	}
-
-	if len(userPlaceDetails) == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"message": "No user place details found for the given userId"})
-		return
 	}
 
 	c.JSON(http.StatusOK, userPlaceDetails)

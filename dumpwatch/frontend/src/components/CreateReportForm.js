@@ -29,15 +29,6 @@ const CreateReportForm = () => {
     const userId = parseInt(localStorage.getItem('userId'));
     const imageInputRef = useRef(null);
 
-    const getUserCommunities = async () => {
-        try {
-            const response = await axios.get(`/get-user-place-details/${userId}`);
-            setUserCommunities(response.data);
-        } catch (error) {
-            console.error('Error fetching user communities:', error);
-        }
-    };
-
     useEffect(() => {
         fetchPlaces();
         getUserCommunities();
@@ -46,6 +37,18 @@ const CreateReportForm = () => {
     useEffect(() => {
         if (useCurrentLocation) fetchUserLocation();
     }, [useCurrentLocation]);
+
+
+    const getUserCommunities = async () => {
+        try {
+            const response = await axios.get(`/get-user-place-details/${userId}`);
+            console.log('User communities:', response);
+            setUserCommunities(Array.isArray(response.data) ? response.data : []);
+        } catch (error) {
+            console.error('Error fetching user communities:', error);
+            setUserCommunities([]);
+        }
+    }
 
     const fetchUserLocation = () => {
         setIsRefreshing(true);

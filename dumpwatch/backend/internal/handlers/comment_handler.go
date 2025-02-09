@@ -13,7 +13,6 @@ import (
 func CreateComment(c *gin.Context) {
 	var comment models.Comment
 
-	// Corrected: Now logging AFTER binding JSON
 	if err := c.ShouldBindJSON(&comment); err != nil {
 		log.Printf("Error parsing JSON: %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})

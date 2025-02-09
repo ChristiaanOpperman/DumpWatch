@@ -59,6 +59,7 @@ const Layout = ({ children, pageTitle }) => {
                     </Link>
                     <button
                         onClick={handleLogout}
+                        id="logout-button"
                         className="block text-lg font-bold text-gray-500 hover:text-green-700 w-full text-left"
                     >
                         Log Out
