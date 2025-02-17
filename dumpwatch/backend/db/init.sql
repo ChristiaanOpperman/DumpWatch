@@ -36,6 +36,7 @@ CREATE TABLE PlaceDetails (
 CREATE TABLE Report (
     ReportId INT AUTO_INCREMENT PRIMARY KEY,
     UserId INT NOT NULL,
+    Status ENUM('Open', 'Scheduled', 'Resolved') NULL,
     CreatedDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     LastModifiedDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     Description TEXT NULL,
@@ -66,3 +67,11 @@ CREATE TABLE UserPlaceDetails (
     CONSTRAINT FK_UserPlaceDetails_PlaceDetail FOREIGN KEY (PlaceDetailId) 
         REFERENCES PlaceDetails(PlaceDetailId) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+-- Insert default UserType data
+INSERT INTO UserType (UserTypeId, UserType, Category) VALUES
+(1, 'Organisation', 'Volunteer Group'),
+(2, 'Organisation', 'Non-Governmental Organization'),
+(3, 'Organisation', 'Community Organisation'),
+(4, 'Organisation', 'Municipality'),
+(5, 'Community Member', 'User');

@@ -9,18 +9,17 @@ import (
 )
 
 type User struct {
-	UserId       int
-	UserTypeId   int
-	Name         string
-	Email        string
-	PasswordHash string
-	Password	 string
+	UserId     int    `json:"userId"`
+	UserTypeId int    `json:"userTypeId"`
+	Name       string `json:"name,omitempty"`
+	Email      string `json:"email"`
+	Password   string `json:"password,omitempty"`
 }
 
 type UserType struct {
-	UserTypeId int
-	UserType   string
-	Category   string
+	UserTypeId int    `json:"userTypeId"`
+	UserType   string `json:"userType"`
+	Category   string `json:"category"`
 }
 
 func HashPassword(password string) (string, error) {

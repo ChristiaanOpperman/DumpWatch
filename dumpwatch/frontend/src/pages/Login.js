@@ -76,6 +76,7 @@ const Login = () => {
                 if (!isRegister) {
                     localStorage.setItem('token', result.token);
                     localStorage.setItem('userId', result.userId);
+                    localStorage.setItem('userType', result.userType);
                     navigate('/home');
                 } else {
                     alert('Registration successful! You can now log in.');

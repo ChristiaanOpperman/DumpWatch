@@ -8,6 +8,7 @@ type Report struct {
 	Description      string       `json:"description"`
 	PlaceDetailId    int          `json:"placeDetailId"`
 	ImageURL         string       `json:"imageUrl"`
+	Status           string       `json:"status"`
 	PlaceDetail      PlaceDetail  `json:"placeDetail"`
 	Place            Place        `json:"place"`
 }

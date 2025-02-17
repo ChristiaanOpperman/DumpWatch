@@ -126,6 +126,7 @@ const ViewReportPage = () => {
                             <p className="text-sm text-gray-600 mb-2">
                                 Created on: {new Date(report.createdDate).toLocaleDateString()}
                             </p>
+                            <p className="text-sm text-gray-600 mb-2">Status: {report.status}</p>
                             <p className="text-sm text-gray-600">{report.place.placeName}</p>
                         </div>
                     </div>
@@ -156,10 +157,10 @@ const ViewReportPage = () => {
 
                     {comments?.length > 0 ? (
                         comments.map((comment) => (
-                            <div key={comment.CommentId} className="mb-4 border-b border-gray-300 pb-4">
-                                <p className="text-gray-800 mb-2">{comment.Message}</p>
+                            <div key={comment.commentId} className="mb-4 border-b border-gray-300 pb-4">
+                                <p className="text-gray-800 mb-2">{comment.message}</p>
                                 <p className="text-sm text-gray-600">
-                                    Created by: {comment.UserId} on {new Date(comment.CreatedDate).toLocaleDateString()}
+                                    Created by: {comment.userId} on {new Date(comment.createdDate).toLocaleDateString()}
                                 </p>
                             </div>
                         ))

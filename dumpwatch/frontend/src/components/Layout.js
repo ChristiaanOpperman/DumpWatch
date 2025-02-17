@@ -5,6 +5,8 @@ const Layout = ({ children, pageTitle }) => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const navigate = useNavigate();
 
+    const userType = localStorage.getItem('userType');
+
 
     const toggleDrawer = () => {
         setIsDrawerOpen(!isDrawerOpen);
@@ -43,7 +45,7 @@ const Layout = ({ children, pageTitle }) => {
                         to="/home"
                         className={`block text-lg font-bold ${window.location.pathname === '/home' ? 'text-green-700' : 'text-gray-500'}`}
                     >
-                        Report
+                        {userType === 'Community Member' ? 'Report' : 'Administration'}
                     </Link>
                     <Link
                         to="/community"

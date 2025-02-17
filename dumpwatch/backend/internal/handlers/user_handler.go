@@ -3,6 +3,7 @@ package handlers
 import (
 	"crypto/rand"
 	"crypto/subtle"
+	"database/sql"
 	"dumpwatch/config"
 	"dumpwatch/internal/models"
 	"encoding/base64"
@@ -80,6 +81,9 @@ var jwtSecret = []byte(os.Getenv("JWT_SECRET"))
 
 func Login(c *gin.Context) {
 	var user models.User
+	var userType models.UserType
+
+	// Bind JSON input
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
 		return
@@ -88,18 +92,28 @@ func Login(c *gin.Context) {
 	email := user.Email
 	password := user.Password
 
-	// Check if the user exists
-	row := config.DB.QueryRow(`SELECT UserId, PasswordHash FROM User WHERE Email = ?`, email)
+	// Query database for user
+	row := config.DB.QueryRow(`
+		SELECT u.UserId, u.PasswordHash, u.UserTypeId, ut.UserType, ut.Category 
+		FROM User u 
+		JOIN UserType ut ON u.UserTypeId = ut.UserTypeId
+		WHERE u.Email = ?`, email)
+
 	var storedHash string
-	if err := row.Scan(&user.UserId, &storedHash); err != nil {
-		log.Printf("User not found with email: %s", email)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
+	if err := row.Scan(&user.UserId, &storedHash, &user.UserTypeId, &userType.UserType, &userType.Category); err != nil {
+		if err == sql.ErrNoRows {
+			log.Printf("User not found: %s", email)
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
+		} else {
+			log.Printf("Database error: %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+		}
 		return
 	}
 
 	// Verify password
 	if !checkPasswordHash(password, storedHash) {
-		log.Printf("Password mismatch for user: %s", email)
+		log.Printf("Invalid password for user: %s", email)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
 		return
 	}
@@ -117,10 +131,12 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	// Successful login response
 	log.Printf("User logged in successfully: %s", email)
 	c.JSON(http.StatusOK, gin.H{
-		"token":  tokenString,
-		"userId": user.UserId,
+		"token":    tokenString,
+		"userId":   user.UserId,
+		"userType": userType.UserType,
 	})
 }
 

@@ -75,7 +75,7 @@ func GetAllReports(c *gin.Context) {
 	}
 
 	rows, err := config.DB.Query(`
-		SELECT r.ReportId, r.CreatedById, r.CreatedDate, r.LastModifiedDate, r.Description, r.PlaceDetailId, r.ImageURL,
+		SELECT r.ReportId, r.CreatedById, r.CreatedDate, r.LastModifiedDate, r.Description, r.PlaceDetailId, r.ImageURL, r.Status,
 				pd.PlaceId, pd.PostalCode, pd.Latitude, pd.Longitude, pd.Accuracy,
 				p.PlaceName
 		FROM Report r
@@ -102,6 +102,7 @@ func GetAllReports(c *gin.Context) {
 			&report.Description,
 			&report.PlaceDetailId,
 			&report.ImageURL,
+			&report.Status,
 			&report.Place.PlaceId,
 			&report.PlaceDetail.PostalCode,
 			&report.PlaceDetail.Latitude,
@@ -144,7 +145,7 @@ func GetReportsByPlaceDetailsId(c *gin.Context) {
 	}
 
 	query := `
-		SELECT r.ReportId, r.CreatedById, r.CreatedDate, r.LastModifiedDate, r.Description, r.ImageURL,
+		SELECT r.ReportId, r.CreatedById, r.CreatedDate, r.LastModifiedDate, r.Description, r.ImageURL, r.Status,
 		       pd.PlaceDetailId, pd.PlaceId, pd.PostalCode, pd.Latitude, pd.Longitude, pd.Accuracy,
 		       p.PlaceName
 		FROM Report r
@@ -176,6 +177,7 @@ func GetReportsByPlaceDetailsId(c *gin.Context) {
 			&report.LastModifiedDate,
 			&report.Description,
 			&report.ImageURL,
+			&report.Status,
 			&report.PlaceDetail.PlaceDetailId,
 			&report.PlaceDetail.PlaceId,
 			&report.PlaceDetail.PostalCode,
@@ -212,7 +214,7 @@ func GetReportById(c *gin.Context) {
 	}
 
 	row := config.DB.QueryRow(`
-		SELECT r.ReportId, r.CreatedById, r.CreatedDate, r.LastModifiedDate, r.Description, r.ImageURL,
+		SELECT r.ReportId, r.CreatedById, r.CreatedDate, r.LastModifiedDate, r.Description, r.ImageURL, r.Status,
 		       pd.PlaceDetailId, pd.PlaceId, pd.PostalCode, pd.Latitude, pd.Longitude, pd.Accuracy,
 		       p.PlaceName
 		FROM Report r
@@ -230,6 +232,7 @@ func GetReportById(c *gin.Context) {
 		&report.LastModifiedDate,
 		&report.Description,
 		&report.ImageURL,
+		&report.Status,
 		&report.PlaceDetail.PlaceDetailId,
 		&report.PlaceDetail.PlaceId,
 		&report.PlaceDetail.PostalCode,

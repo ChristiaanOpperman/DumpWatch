@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import Home from './pages/Home';
+import Home from './pages/MemberHome';
+import OrgHome from './pages/OrgHome';
 import CommunityPage from './pages/CommunityPage';
 import ViewReportPage from './pages/ViewReportPage';
 import Login from './pages/Login';
@@ -8,6 +9,7 @@ import PrivateRoute from './components/PrivateRoute';
 import KnowledgeBasePage from './pages/KnowledgeBasePage';
 
 function App() {
+  const userType = localStorage.getItem('userType');
   return (
     <Router>
       <Routes>
@@ -17,7 +19,15 @@ function App() {
           path="/home"
           element={
             <PrivateRoute>
-              <Home />
+              {userType === 'Community Member' ? <Home /> : <OrgHome />}
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/org"
+          element={
+            <PrivateRoute>
+              <OrgHome />
             </PrivateRoute>
           }
         />
