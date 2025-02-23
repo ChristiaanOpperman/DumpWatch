@@ -1,0 +1,148 @@
+{
+    "layout": {
+        "menu": "Imenyu",
+        "report": "Bika",
+        "community": "Umphakathi",
+        "administration": "Ulawulo",
+        "knowledgeBase": "Ulwazi",
+        "logOut": "Phuma"
+    },
+    "settings": {
+        "title": "Izilungiselelo",
+        "selectLanguage": "Khetha Ulimi:",
+        "darkMode": "Imodi Emnyama:",
+        "contactSupport": "Xhumana Noxhaso",
+        "supportEmailText": "Uma unemibuzo noma udinga usizo, sicela uthumele i-email ku"
+    },
+    "viewReport": {
+        "pageTitle": "Buka Umbiko",
+        "loading": "Layisha umbiko nezimpendulo...",
+        "reportDetailsHeader": "Imininingwane Yombiko",
+        "descriptionLabel": "Incazelo:",
+        "createdOnLabel": "Kwakhiwe ngomhla:",
+        "statusLabel": "Isimo:",
+        "addCommentHeader": "Faka Impendulo",
+        "commentPlaceholder": "Bhala impendulo...",
+        "postCommentButton": "Thumela Impendulo",
+        "postingButton": "Kuthunyelwa...",
+        "commentsHeader": "Iziphendulo",
+        "createdByLabel": "Idaliwe ngu:",
+        "noComments": "Azikho izimpendulo ezingeziwe okwamanje."
+    },
+    "home": {
+        "pageTitle": "Bika Ukulahleka Kwamadoti",
+        "stepsHeader": "Indlela Yokubika Ukulahleka Kwamadoti",
+        "step1": "Isinyathelo 1: Nikeza imininingwane yendawo – sebenzisa i-GPS noma uyibhale ngesandla.",
+        "step2": "Isinyathelo 2: Faka incazelo bese unamathisela isithombe sodoti.",
+        "step3": "Isinyathelo 3: Chofoza Thumela Isithombe. Usuke wenze ingxenye yakho yokugcina iplanethi ihlanzekile!",
+        "gotItButton": "Ngiyavuma!",
+        "currentStats": "Izibalo Zamanje",
+        "reportsFiled": "Izimemezelo Ezibikiwe",
+        "communitiesInvolved": "Imiphakathi Ebandakanyekile",
+        "resolvedCases": "Izimo Eziphumelele",
+        "myCommunities": "Imiphakathi Yami",
+        "knowledgeBase": "Ulwazi"
+    },
+    "createReport": {
+        "header": "Bika Ukulahleka Kwamadoti",
+        "inMyCommunity": "Emphakathini Wami",
+        "useCurrentLocation": "Sebenzisa Indawo Yakho Yamanje",
+        "manuallyEnterAddress": "Faka Ikheli Ngezandla",
+        "placesNearYou": "Izindawo Eziseduze nawe:",
+        "postalCode": "Ikhodi yeposi:",
+        "refreshLocation": "Vuselela Indawo",
+        "selectPlace": "Khetha indawo",
+        "imageLabel": "Isithombe:",
+        "chooseFile": "Khetha Ifayela",
+        "fileLabel": "Ifayela:",
+        "sizeLabel": "Usayizi:",
+        "descriptionLabel": "Incazelo:",
+        "uploadPost": "Thumela Okuthunyelwe",
+        "loading": "Kulayishwa..."
+    },
+    "communityDropdown": {
+        "header": "Khetha Umphakathi",
+        "allCommunities": "Zonke Imiphakathi",
+        "addCommunity": "Faka Umphakathi",
+        "useCurrentLocation": "Sebenzisa Indawo Yakho Yamanje",
+        "manuallyEnterAddress": "Faka Ikheli Ngezandla",
+        "placesNearYou": "Izindawo Eziseduze nawe:",
+        "selectPlace": "Khetha indawo",
+        "postalCode": "Ikhodi yeposi:",
+        "selectPostalCode": "Khetha ikhodi yeposi",
+        "refreshLocation": "Vuselela Indawo",
+        "saveCommunity": "Londoloza Umphakathi",
+        "errorCouldNotFindDetails": "Ayikwazanga ukuthola imininingwane yendawo yakho.",
+        "errorUnableToRetrieve": "Ayikwazanga ukuthola indawo yakho. Sicela ufake ngezandla.",
+        "errorGeolocationNotSupported": "I-Geolocation ayisekelwa yileli thwebhu.",
+        "loading": "Kulayishwa..."
+    },
+    "communityPage": {
+        "pageTitle": "Umphakathi",
+        "reportsHeading": "Imibiko Yomphakathi",
+        "showImages": "Bonisa Izithombe",
+        "hideImages": "Fihla Izithombe",
+        "loadingReports": "Layisha imibiko...",
+        "noReports": "Ayikho imibiko etholakalayo.",
+        "createdOn": "Kwakhiwe ngomhla:",
+        "description": "Incazelo:",
+        "community": "Umphakathi:"
+    },
+    "orgHome": {
+        "pageTitle": "Ulawulo",
+        "orgCommunities": "Imiphakathi Yezinhlangano",
+        "statsTitle": "Izibalo Zethu:",
+        "cleanUpsCompleted": "Ukucishwa Kwehlanzekile Okuphelile",
+        "cleanUpsScheduled": "Ukucishwa Kwehlanzekile Okuhlelwe",
+        "myCommunities": "Imiphakathi Yami",
+        "knowledgeBase": "Ulwazi"
+    },
+    "knowledgeBase": {
+        "pageTitle": "Isizinda Solwazi",
+        "articlesTitle": "Izihloko",
+        "funFactTitle": "Iqiniso Lomhla Namuhla",
+        "faqTitle": "Imibuzo Evame Ukubuzwa",
+        "source": "Umthombo:",
+        "faqs": [
+            {
+                "question": "Ungabika kanjani ukulahleka kwamadoti?",
+                "answer": "Ungabika isenzakalo sokulahleka kwamadoti ngokuvakashela ikhasi le 'Bika' kuDumpWatch."
+            },
+            {
+                "question": "Kwenzakalani ngemva kokuthi ngibhale umbiko?",
+                "answer": "Uma usubikile, uzotholakala ezinhlelweni zendawo kanye nabantu bomphakathi ukuze babuke, babambe iqhaza futhi basebenze."
+            },
+            {
+                "question": "Ubani ongabona imibhalo yami nempendulo?",
+                "answer": "Imibhalo nempendulo zakho zibonakala kuwo wonke amalungu omphakathi okhethiwe, kanye nanoma yimuphi umsebenzisi obhalisiwe."
+            },
+            {
+                "question": "Ngingasusa yini imibhalo nempendulo yami?",
+                "answer": "Cha, ikhono lokususa imibhalo nempendulo lizokwethulwa esikhathini esizayo."
+            },
+            {
+                "question": "Ngihlangabezane nenkinga nenkqubo, ngingaxhumana kanjani nenkxaso?",
+                "answer": "Noma yiziphi izimpendulo noma imibuzo ziyakwaziswa kakhulu futhi zingathunyelwa ethimeni lethu lenkxaso nge-imeyili."
+            }
+        ],
+        "funFacts": [
+            "Umthethosisekelo waseNingizimu Afrika uvikela wonke umuntu ilungelo lokufinyelela endaweni engalimazi impilo yabo.",
+            "INingizimu Afrika yakhiqiza ama-tonne angu-108 wemfucuza ngo-2011, kanti ama-tonne angu-59 ayefucuza jikelele.",
+            "Ukuphinda kusetshenziswe itheyili elilodwa le-aluminium kuhlangabezana namandla okusebenzisa ilambu le-100-watt amahora angu-20."
+        ],
+        "articles": [
+            {
+                "title": "Yini ukulahleka kwamadoti?",
+                "description": "Ukulahleka kwamadoti kusho ukulahla imfucuza endaweni yomphakathi ngaphandle kwemvume, okulimaza imvelo nempilo yomphakathi.",
+                "source": "vizzia",
+                "link": "https://www.vizzia.eu/en/articles/understanding-illegal-dumping"
+            },
+            {
+                "title": "Ukulahleka kwamadoti akugcini nje ngokubukeka kabi kodwa kuyingozi futhi",
+                "description": "Ukulahleka kwamadoti eNingizimu Afrika kubiza ama-R350 million njalo ngonyaka ukukhipha ama-tonne angu-180,000 wemfucuza.",
+                "source": "wwise",
+                "link": "https://wwise.co.za/articles/illegal-dumping-is-not-only-an-eyesore-but-is-hazardous-too/"
+            }
+        ]
+    }
+}

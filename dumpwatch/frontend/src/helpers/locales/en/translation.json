@@ -1,0 +1,149 @@
+{
+  "layout": {
+    "menu": "Menu",
+    "report": "Report",
+    "community": "Community",
+    "settings": "Settings",
+    "administration": "Administration",
+    "knowledgeBase": "Knowledge Base",
+    "logOut": "Log Out"
+  },
+  "settings": {
+    "title": "Settings",
+    "selectLanguage": "Select Language:",
+    "darkMode": "Dark Mode:",
+    "contactSupport": "Contact Support",
+    "supportEmailText": "If you have any questions or need help, please email us at"
+  },
+  "viewReport": {
+    "pageTitle": "View Report",
+    "loading": "Loading report and comments...",
+    "reportDetailsHeader": "Report Details",
+    "descriptionLabel": "Description:",
+    "createdOnLabel": "Created on:",
+    "statusLabel": "Status:",
+    "addCommentHeader": "Add a Comment",
+    "commentPlaceholder": "Write a comment...",
+    "postCommentButton": "Post Comment",
+    "postingButton": "Posting...",
+    "commentsHeader": "Comments",
+    "createdByLabel": "Created by:",
+    "noComments": "No comments have been added yet."
+  },
+  "home": {
+    "pageTitle": "Report Illegal Dumping",
+    "stepsHeader": "How to Report Illegal Dumping",
+    "step1": "Step 1: Provide the location details – use GPS or type it manually.",
+    "step2": "Step 2: Add a description and attach an image of the mess.",
+    "step3": "Step 3: Click Upload Post. You've done your part to keep the planet clean!",
+    "gotItButton": "Got it!",
+    "currentStats": "Current Stats",
+    "reportsFiled": "Reports Filed",
+    "communitiesInvolved": "Communities Involved",
+    "resolvedCases": "Resolved Cases",
+    "myCommunities": "My Communities",
+    "knowledgeBase": "Knowledge Base"
+  },
+  "createReport": {
+    "header": "Report an Illegal Dumping",
+    "inMyCommunity": "In My Community",
+    "useCurrentLocation": "Use Current Location",
+    "manuallyEnterAddress": "Manually Enter Address",
+    "placesNearYou": "Places Near You:",
+    "postalCode": "Postal Code:",
+    "refreshLocation": "Refresh Location",
+    "selectPlace": "Select a place",
+    "imageLabel": "Image:",
+    "chooseFile": "Choose File",
+    "fileLabel": "File:",
+    "sizeLabel": "Size:",
+    "descriptionLabel": "Description:",
+    "uploadPost": "Upload Post",
+    "loading": "Loading..."
+  },
+  "communityDropdown": {
+    "header": "Select Community",
+    "allCommunities": "All Communities",
+    "addCommunity": "Add Community",
+    "useCurrentLocation": "Use Current Location",
+    "manuallyEnterAddress": "Manually Enter Address",
+    "placesNearYou": "Places Near You:",
+    "selectPlace": "Select a place",
+    "postalCode": "Postal Code:",
+    "selectPostalCode": "Select a postal code",
+    "refreshLocation": "Refresh Location",
+    "saveCommunity": "Save Community",
+    "errorCouldNotFindDetails": "Could not find details for your location.",
+    "errorUnableToRetrieve": "Unable to retrieve your location. Please enter it manually.",
+    "errorGeolocationNotSupported": "Geolocation is not supported by your browser.",
+    "loading": "Loading..."
+  },
+  "communityPage": {
+    "pageTitle": "Community",
+    "reportsHeading": "Community Reports",
+    "showImages": "Show Images",
+    "hideImages": "Hide Images",
+    "loadingReports": "Loading reports...",
+    "noReports": "No reports available.",
+    "createdOn": "Created on:",
+    "description": "Description:",
+    "community": "Community:"
+  },
+  "orgHome": {
+    "pageTitle": "Administration",
+    "orgCommunities": "Organisation Communities",
+    "statsTitle": "Our Stats:",
+    "cleanUpsCompleted": "Clean Ups Completed",
+    "cleanUpsScheduled": "Clean Ups Scheduled",
+    "myCommunities": "My Communities",
+    "knowledgeBase": "Knowledge Base"
+  },
+  "knowledgeBase": {
+    "pageTitle": "Knowledge Base",
+    "articlesTitle": "Articles",
+    "funFactTitle": "Today's Fun Fact",
+    "faqTitle": "Frequently Asked Questions",
+    "source": "Source:",
+    "faqs": [
+      {
+        "question": "How to report illegal dumping?",
+        "answer": "You can report an illegal dumping incident by visiting the 'Report' page within the DumpWatch platform."
+      },
+      {
+        "question": "What happens after I submit a report?",
+        "answer": "Once submitted, it will be accessible to local organisations and community members for viewing, engagement, and action."
+      },
+      {
+        "question": "Who can view my posts and comments?",
+        "answer": "Your posts and comments are visible to all members of the designated community, as well as to any registered user on the platform."
+      },
+      {
+        "question": "Can I delete my posts and comments?",
+        "answer": "No, the ability to delete posts and comments will be introduced in a future update."
+      },
+      {
+        "question": "I experienced an issue with the application, how can I contact support?",
+        "answer": "Any feedback or inquiries are highly valued and can be directed to our support team via email."
+      }
+    ],
+    "funFacts": [
+      "The Constitution of South Africa guarantees everyone the right of access to an environment that is not harmful to their health and wellbeing.",
+      "South Africa generated 108 million tonnes of waste in 2011, with 59 million tonnes being general waste.",
+      "Recycling one aluminium can saves enough energy to power a 100-watt light bulb for 20 hours."
+    ],
+    "articles": [
+      {
+        "title": "What is illegal dumping?",
+        "description": "Illegal dumping is the unauthorised disposal of waste in public spaces, which harms the environment and public health.",
+        "source": "vizzia",
+        "link": "https://www.vizzia.eu/en/articles/understanding-illegal-dumping"
+      },
+      {
+        "title": "Illegal dumping is not only an eyesore but is hazardous too",
+        "description": "Illegal dumping in South Africa costs R350 million annually to remove 180,000 tonnes of waste.",
+        "source": "wwise",
+        "link": "https://wwise.co.za/articles/illegal-dumping-is-not-only-an-eyesore-but-is-hazardous-too/"
+      }
+    ]
+  }
+}

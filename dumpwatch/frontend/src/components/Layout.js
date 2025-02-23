@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const Layout = ({ children, pageTitle }) => {
+    const { t } = useTranslation();
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const navigate = useNavigate();
-
     const userType = localStorage.getItem('userType');
 
-
-    const toggleDrawer = () => {
-        setIsDrawerOpen(!isDrawerOpen);
-    };
-
+    const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
     const handleLogout = () => {
         localStorage.removeItem('token');
         navigate('/login');
@@ -25,11 +22,12 @@ const Layout = ({ children, pageTitle }) => {
             ></div>
 
             <div
-                className={`fixed top-0 right-0 h-full bg-white w-64 z-50 transition-transform transform ${isDrawerOpen ? 'translate-x-0' : 'translate-x-full'}`}
+                className={`fixed top-0 right-0 h-full bg-white w-64 z-50 transition-transform transform ${isDrawerOpen ? 'translate-x-0' : 'translate-x-full'
+                    }`}
             >
                 <header className="bg-green-700 text-white p-6 flex justify-between items-center">
                     <div className="flex items-center space-x-4">
-                        <h1 className="text-2xl font-bold">Menu</h1>
+                        <h1 className="text-2xl font-bold">{t('layout.menu')}</h1>
                     </div>
                     <button aria-label="menu" onClick={toggleDrawer} className="focus:outline-none">
                         <div className="space-y-1">
@@ -43,28 +41,38 @@ const Layout = ({ children, pageTitle }) => {
                 <nav className="p-4 space-y-4">
                     <Link
                         to="/home"
-                        className={`block text-lg font-bold ${window.location.pathname === '/home' ? 'text-green-700' : 'text-gray-500'}`}
+                        className={`block text-lg font-bold ${window.location.pathname === '/home' ? 'text-green-700' : 'text-gray-500'
+                            }`}
                     >
-                        {userType === 'Community Member' ? 'Report' : 'Administration'}
+                        {userType === 'Community Member' ? t('layout.report') : t('layout.administration')}
                     </Link>
                     <Link
                         to="/community"
-                        className={`block text-lg font-bold ${window.location.pathname.includes('/community') ? 'text-green-700' : 'text-gray-500'}`}
+                        className={`block text-lg font-bold ${window.location.pathname.includes('/community') ? 'text-green-700' : 'text-gray-500'
+                            }`}
                     >
-                        Community
+                        {t('layout.community', 'Community')}
                     </Link>
                     <Link
                         to="/knowledge-base"
-                        className={`block text-lg font-bold ${window.location.pathname === '/knowledge-base' ? 'text-green-700' : 'text-gray-500'}`}
+                        className={`block text-lg font-bold ${window.location.pathname === '/knowledge-base' ? 'text-green-700' : 'text-gray-500'
+                            }`}
                     >
-                        Knowledge Base
+                        {t('layout.knowledgeBase')}
+                    </Link>
+                    <Link
+                        to="/settings"
+                        className={`block text-lg font-bold ${window.location.pathname === '/settings' ? 'text-green-700' : 'text-gray-500'
+                            }`}
+                    >
+                        {t('settings.title')}
                     </Link>
                     <button
                         onClick={handleLogout}
                         id="logout-button"
                         className="block text-lg font-bold text-gray-500 hover:text-green-700 w-full text-left"
                     >
-                        Log Out
+                        {t('layout.logOut')}
                     </button>
                 </nav>
             </div>
@@ -76,7 +84,7 @@ const Layout = ({ children, pageTitle }) => {
                             <h1 className="text-2xl font-bold">DumpWatch</h1>
                             <img src="/mobile-logo.png" alt="DumpWatch Logo" className="h-8 w-8" />
                         </div>
-                        <p className="text-m text-gray-300">{pageTitle}</p>
+                        <p className="text-m text-gray-300">{t(pageTitle)}</p>
                     </div>
                     <button aria-label="menu-header" onClick={toggleDrawer} className="focus:outline-none">
                         <div className="space-y-1">
@@ -86,9 +94,7 @@ const Layout = ({ children, pageTitle }) => {
                         </div>
                     </button>
                 </header>
-                <main className="flex-grow">
-                    {children}
-                </main>
+                <main className="flex-grow">{children}</main>
                 <footer className="bg-green-700 text-white p-4 text-center">
                     <p>&copy; 2024 DumpWatch. All rights reserved.</p>
                 </footer>

@@ -1,0 +1,148 @@
+{
+    "layout": {
+        "menu": "Spyskaart",
+        "report": "Verslag",
+        "community": "Gemeenskap",
+        "administration": "Administrasie",
+        "knowledgeBase": "Kennisbasis",
+        "logOut": "Teken uit"
+    },
+    "settings": {
+        "title": "Instellings",
+        "selectLanguage": "Kies taal:",
+        "darkMode": "Donker modus:",
+        "contactSupport": "Kontak Ondersteuning",
+        "supportEmailText": "As jy enige vrae het of hulp nodig het, stuur asseblief 'n e-pos na"
+    },
+    "viewReport": {
+        "pageTitle": "Beskou Rapport",
+        "loading": "Laai rapport en kommentaar...",
+        "reportDetailsHeader": "Rapportbesonderhede",
+        "descriptionLabel": "Beskrywing:",
+        "createdOnLabel": "Geskep op:",
+        "statusLabel": "Status:",
+        "addCommentHeader": "Voeg 'n Kommentaar by",
+        "commentPlaceholder": "Skryf 'n kommentaar...",
+        "postCommentButton": "Plaas Kommentaar",
+        "postingButton": "Besig om te plaas...",
+        "commentsHeader": "Kommentaar",
+        "createdByLabel": "Geskep deur:",
+        "noComments": "Geen kommentaar bygevoeg nie."
+    },
+    "home": {
+        "pageTitle": "Rapporteer Onwettige Afval",
+        "stepsHeader": "Hoe om Onwettige Afval te Rapporteer",
+        "step1": "Stap 1: Verskaf die liggingbesonderhede – gebruik GPS of tik dit handmatig in.",
+        "step2": "Stap 2: Voeg 'n beskrywing by en heg 'n beeld van die rommel aan.",
+        "step3": "Stap 3: Klik op Laai Pos Op. Jy het jou deel gedoen om die planeet skoon te hou!",
+        "gotItButton": "Verstaan!",
+        "currentStats": "Huidige Statistieke",
+        "reportsFiled": "Verslae Gediende",
+        "communitiesInvolved": "Betrokke Gemeenskappe",
+        "resolvedCases": "Opgeloste Sake",
+        "myCommunities": "My Gemeenskappe",
+        "knowledgeBase": "Kennisbasis"
+    },
+    "createReport": {
+        "header": "Rapporteer Onwettige Afval",
+        "inMyCommunity": "In My Gemeenskap",
+        "useCurrentLocation": "Gebruik Huidige Ligging",
+        "manuallyEnterAddress": "Voer Adres Handmatig In",
+        "placesNearYou": "Plekke Naby Jou:",
+        "postalCode": "Poskode:",
+        "refreshLocation": "Verfris Ligging",
+        "selectPlace": "Kies 'n plek",
+        "imageLabel": "Beeld:",
+        "chooseFile": "Kies Lêer",
+        "fileLabel": "Lêer:",
+        "sizeLabel": "Grootte:",
+        "descriptionLabel": "Beskrywing:",
+        "uploadPost": "Laai Pos Op",
+        "loading": "Laai..."
+    },
+    "communityDropdown": {
+        "header": "Kies Gemeenskap",
+        "allCommunities": "Alle Gemeenskappe",
+        "addCommunity": "Voeg Gemeenskap by",
+        "useCurrentLocation": "Gebruik Huidige Ligging",
+        "manuallyEnterAddress": "Voer Adres Handmatig In",
+        "placesNearYou": "Plekke Naby Jou:",
+        "selectPlace": "Kies 'n plek",
+        "postalCode": "Poskode:",
+        "selectPostalCode": "Kies 'n poskode",
+        "refreshLocation": "Verfris Ligging",
+        "saveCommunity": "Stoor Gemeenskap",
+        "errorCouldNotFindDetails": "Kon nie besonderhede vir jou ligging vind nie.",
+        "errorUnableToRetrieve": "Kon jou ligging nie verkry nie. Voer dit asseblief handmatig in.",
+        "errorGeolocationNotSupported": "Geolokasie word nie deur jou blaaier ondersteun nie.",
+        "loading": "Laai..."
+    },
+    "communityPage": {
+        "pageTitle": "Gemeenskap",
+        "reportsHeading": "Gemeenskapsverslae",
+        "showImages": "Wys Beelde",
+        "hideImages": "Verberg Beelde",
+        "loadingReports": "Laai verslae...",
+        "noReports": "Geen verslae beskikbaar nie.",
+        "createdOn": "Geskep op:",
+        "description": "Beskrywing:",
+        "community": "Gemeenskap:"
+    },
+    "orgHome": {
+        "pageTitle": "Administrasie",
+        "orgCommunities": "Organisasiegemeenskappe",
+        "statsTitle": "Ons Statistieke:",
+        "cleanUpsCompleted": "Skoonmaakvoltooiings",
+        "cleanUpsScheduled": "Skoonmaakskedules",
+        "myCommunities": "My Gemeenskappe",
+        "knowledgeBase": "Kennisbasis"
+    },
+    "knowledgeBase": {
+        "pageTitle": "Kennisbasis",
+        "articlesTitle": "Artikels",
+        "funFactTitle": "Vandag se Interessante Feit",
+        "faqTitle": "Gereeld Gestelde Vrae",
+        "source": "Bron:",
+        "faqs": [
+            {
+                "question": "Hoe rapporteer ek onwettige afval?",
+                "answer": "Jy kan 'n onwettige afvalgeval rapporteer deur die 'Rapporteer'-blad op die DumpWatch-platform te besoek."
+            },
+            {
+                "question": "Wat gebeur nadat ek 'n verslag ingedien het?",
+                "answer": "Nadat dit ingedien is, sal dit beskikbaar wees vir plaaslike organisasies en gemeenskapslede vir besigtiging, betrokkenheid en optrede."
+            },
+            {
+                "question": "Wie kan my plasings en kommentaar sien?",
+                "answer": "Jou plasings en kommentaar is sigbaar vir alle lede van die gespesifiseerde gemeenskap, sowel as enige geregistreerde gebruiker op die platform."
+            },
+            {
+                "question": "Kan ek my plasings en kommentaar verwyder?",
+                "answer": "Nee, die vermoë om plasings en kommentaar te verwyder, sal in 'n toekomstige opdatering beskikbaar wees."
+            },
+            {
+                "question": "Ek het 'n probleem met die aansoek ondervind, hoe kontak ek ondersteuning?",
+                "answer": "Enige terugvoer of navrae word baie waardeer en kan aan ons ondersteuningspan per e-pos gerig word."
+            }
+        ],
+        "funFacts": [
+            "Die Grondwet van Suid-Afrika waarborg dat almal die reg het om toegang te hê tot 'n omgewing wat nie hul gesondheid benadeel nie.",
+            "Suid-Afrika het in 2011 108 miljoen ton afval gegenereer, waarvan 59 miljoen ton algemene afval was.",
+            "Die herwinning van een aluminium blik bespaar genoeg energie om 'n 100-watt-lig vir 20 uur te laat brand."
+        ],
+        "articles": [
+            {
+                "title": "Wat is onwettige afval?",
+                "description": "Onwettige afval is die ongemagtigde wegdoen van afval in openbare ruimtes, wat die omgewing en openbare gesondheid benadeel.",
+                "source": "vizzia",
+                "link": "https://www.vizzia.eu/en/articles/understanding-illegal-dumping"
+            },
+            {
+                "title": "Onwettige afval is nie net onaantreklik nie, maar ook gevaarlik",
+                "description": "Onwettige afval in Suid-Afrika kos 350 miljoen Rand per jaar om 180,000 ton afval te verwyder.",
+                "source": "wwise",
+                "link": "https://wwise.co.za/articles/illegal-dumping-is-not-only-an-eyesore-but-is-hazardous-too/"
+            }
+        ]
+    }
+}

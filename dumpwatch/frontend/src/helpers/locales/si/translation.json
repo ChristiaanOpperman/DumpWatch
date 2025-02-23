@@ -1,0 +1,148 @@
+{
+    "layout": {
+        "menu": "Menyu",
+        "report": "Tlaleletšo",
+        "community": "Sehlopha",
+        "administration": "Tsamaiso",
+        "knowledgeBase": "Tsebo",
+        "logOut": "Phuma"
+    },
+    "settings": {
+        "title": "Ditekanyetšo",
+        "selectLanguage": "Khetha Puo:",
+        "darkMode": "Modi ya lefifi:",
+        "contactSupport": "Kgokagano ya Tshehetso",
+        "supportEmailText": "Ge o na le dipotšišo goba o nyaka thušo, romela i-email go"
+    },
+    "viewReport": {
+        "pageTitle": "Bona Tlaleletšo",
+        "loading": "Go lwala tlaleletšo le dikgopolo...",
+        "reportDetailsHeader": "Dintlha tša Tlaleletšo",
+        "descriptionLabel": "Tlhaloso:",
+        "createdOnLabel": "E hlolwe ka:",
+        "statusLabel": "Maemo:",
+        "addCommentHeader": "Oketsa Kgopolo",
+        "commentPlaceholder": "Ngwala kgopolo...",
+        "postCommentButton": "Romela Kgopolo",
+        "postingButton": "Go romelwa...",
+        "commentsHeader": "Dikgopolo",
+        "createdByLabel": "E hlolwe ke:",
+        "noComments": "Ga go na dikgopolo tše di oketšwego go fihla gona."
+    },
+    "home": {
+        "pageTitle": "Bopa Tlaleletšo ya Kgokagano",
+        "stepsHeader": "Mokgwa wa go Bopa Tlaleletšo ya Kgokagano",
+        "step1": "Mohato 1: Fana ka dintlha tša lefelo – diriša GPS goba ngwala ka letlalo.",
+        "step2": "Mohato 2: Oketsa tlhaloso gomme o tsenye setshwantsho sa kgorogo.",
+        "step3": "Mohato 3: Tobetsa Upload Post. O dirile karolo ya gago go boloka lefase le hloekile!",
+        "gotItButton": "Ke kwe!",
+        "currentStats": "Dikgopolo tša Bjale",
+        "reportsFiled": "Dintlha tša Tlaleletšo",
+        "communitiesInvolved": "Sehlopha se Se Kenetšwego",
+        "resolvedCases": "Maatla a Feditšwego",
+        "myCommunities": "Sehlopha sa Ka",
+        "knowledgeBase": "Tsebo Base"
+    },
+    "createReport": {
+        "header": "Bopa Tlaleletšo ya Kgokagano",
+        "inMyCommunity": "Sehlopheng sa Ka",
+        "useCurrentLocation": "Diriša Lefelo la Gago la Bjale",
+        "manuallyEnterAddress": "Ngwala Aterese Ka Letlalo",
+        "placesNearYou": "Ditleletšo tše Maleba le Gago:",
+        "postalCode": "Khoutu ya Poso:",
+        "refreshLocation": "Ntšha Lefelo",
+        "selectPlace": "Khetha Lefelo",
+        "imageLabel": "Setshwantsho:",
+        "chooseFile": "Khetha File",
+        "fileLabel": "File:",
+        "sizeLabel": "Bofelo:",
+        "descriptionLabel": "Tlhaloso:",
+        "uploadPost": "Romela Tlaleletšo",
+        "loading": "E tsamaea..."
+    },
+    "communityDropdown": {
+        "header": "Khetha Sehlopha",
+        "allCommunities": "Sehlopha ka moka",
+        "addCommunity": "Oketsa Sehlopha",
+        "useCurrentLocation": "Diriša Lefelo la Gago la Bjale",
+        "manuallyEnterAddress": "Ngwala Aterese Ka Letlalo",
+        "placesNearYou": "Ditleletšo tše Maleba le Gago:",
+        "selectPlace": "Khetha Lefelo",
+        "postalCode": "Khoutu ya Poso:",
+        "selectPostalCode": "Khetha khoutu ya poso",
+        "refreshLocation": "Ntšha Lefelo",
+        "saveCommunity": "Boloka Sehlopha",
+        "errorCouldNotFindDetails": "Ga go a hwetšwa dintlha tša lefelo la gago.",
+        "errorUnableToRetrieve": "Ga go kgone go hwetša lefelo la gago. Hle, ngwala ka letlalo.",
+        "errorGeolocationNotSupported": "Geolocation ga se tshegetšwe ke sebatli sa gago.",
+        "loading": "E tsamaea..."
+    },
+    "communityPage": {
+        "pageTitle": "Sehlopha",
+        "reportsHeading": "Tlaleletšo ya Sehlopha",
+        "showImages": "Bontšha Dithulaganyo",
+        "hideImages": "Fihla Dithulaganyo",
+        "loadingReports": "Go lwala ditlaleletšo...",
+        "noReports": "Ga go na ditlaleletšo tše di hwetšwago.",
+        "createdOn": "E hlolwe ka:",
+        "description": "Tlhaloso:",
+        "community": "Sehlopha:"
+    },
+    "orgHome": {
+        "pageTitle": "Tsamaiso",
+        "orgCommunities": "Dikgwetlo tša Mokgatlo",
+        "statsTitle": "Dikgopolo tša Bjale:",
+        "cleanUpsCompleted": "Dikgwebo tša hlwekile tše di phethilwego",
+        "cleanUpsScheduled": "Dikgwebo tša hlwekile tše di beakantšwego",
+        "myCommunities": "Sehlopha sa Ka",
+        "knowledgeBase": "Tsebo Base"
+    },
+    "knowledgeBase": {
+        "pageTitle": "Tsebo Base",
+        "articlesTitle": "Dithutopatšo",
+        "funFactTitle": "Sehlahla sa Lehono",
+        "faqTitle": "Dipotšišo tša go Botelwa",
+        "source": "Mohlodi:",
+        "faqs": [
+            {
+                "question": "O ka bopa tlaleletšo ya kgokagano bjang?",
+                "answer": "O ka bopa tlaleletšo ya kgokagano ka go etela letlakala la 'Bopa Tlaleletšo' la DumpWatch."
+            },
+            {
+                "question": "Go direga eng ge o romela tlaleletšo?",
+                "answer": "Ge o romela, tlaleletšo e tla hwetšwa go dikhamphani tša legae le maloko a sehlopha bakeng sa go le bona le go tšea karolo."
+            },
+            {
+                "question": "Ke mang yo a ka bona ditlaleletšo le dikgopolo tša gago?",
+                "answer": "Ditlaleletšo le dikgopolo tša gago di a bonwa go bao ba lego sehlopheng se beakantšwego, gammogo le mosebedi yo o ngwadilwego."
+            },
+            {
+                "question": "Ke ka tlo hlakodiša dikgopolo tša gago?",
+                "answer": "Aowa, bokgoni bja go hlakodiša dikgopolo bo tla tla ka nako e tlago."
+            },
+            {
+                "question": "Ge o kopana le bothata ka lenaneo, o ka ikopanya bjang le setšhaba sa thušo?",
+                "answer": "Go amogela dikgopolo goba dipotšišo go a hlompholla gomme go swanetšwe go romelwa go setšhaba sa thušo ka imeile."
+            }
+        ],
+        "funFacts": [
+            "Molaotheo wa Afrika Borwa o tiišetša gore bohle ba na le tokelo ya go fihlelela tikologo yeo e sa bakwago bohloko le go se laolego bophelo bja bona.",
+            "Afrika Borwa e hlahile ditea tša 108 tša tfwalo ka 2011, gomme 59 tša tšona ke tfwalo ya kakaretšo.",
+            "Go šomiša gape kanela ya aluminium go boloka maatla a a lekanyeditšwego go tlaleletša letšatši la dihora tše 20 tša khatla ya 100-watt."
+        ],
+        "articles": [
+            {
+                "title": "Ke eng go bopa tlaleletšo ya kgokagano?",
+                "description": "Go bopa tlaleletšo ya kgokagano ke go tsenya tfwalo ka tsela yeo e sa laolego tikologo, yeo e bakago tshenyo tikologong le bophelo.",
+                "source": "vizzia",
+                "link": "https://www.vizzia.eu/en/articles/understanding-illegal-dumping"
+            },
+            {
+                "title": "Go bopa tlaleletšo ga se feela ka go shebega gabotse eupša go le kotsi",
+                "description": "Go bopa tlaleletšo Afrika Borwa go tloga go bitsa R350 million ngwaga go tlo hlakodiša ditea tša 180,000 tša tfwalo.",
+                "source": "wwise",
+                "link": "https://wwise.co.za/articles/illegal-dumping-is-not-only-an-eyesore-but-is-hazardous-too/"
+            }
+        ]
+    }
+}
