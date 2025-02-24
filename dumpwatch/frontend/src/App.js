@@ -8,13 +8,11 @@ import Login from './pages/Login';
 import PrivateRoute from './components/PrivateRoute';
 import KnowledgeBasePage from './pages/KnowledgeBasePage';
 import SettingsPage from './pages/SettingsPage';
-import { LanguageProvider } from './helpers/LanguageContext';
 
 
 function App() {
   const userType = localStorage.getItem('userType');
   return (
-    <LanguageProvider>
       <Router>
         <Routes>
           <Route path="/" element={<Navigate to="/login" />} />
@@ -69,7 +67,6 @@ function App() {
           />
         </Routes>
       </Router>
-    </LanguageProvider>
   );
 }
 
