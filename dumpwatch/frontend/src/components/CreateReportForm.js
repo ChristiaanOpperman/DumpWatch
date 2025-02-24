@@ -159,7 +159,7 @@ const CreateReportForm = () => {
             <h2 className="text-2xl font-bold text-center mb-8">{t('createReport.header')}</h2>
             <form onSubmit={handleSubmit} className="space-y-6">
                 {message && (
-                    <div className={`p-4 rounded-md ${message.includes('successfully') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                    <div className={`p-4 rounded-md ${message.includes(t('createReport.success')) ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                         {message}
                     </div>
                 )}

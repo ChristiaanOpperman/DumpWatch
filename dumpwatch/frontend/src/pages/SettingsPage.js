@@ -27,7 +27,6 @@ const SettingsPage = () => {
                     >
                         <option value="english">English</option>
                         <option value="zulu">Zulu</option>
-                        <option value="sipedi">Sipedi</option>
                         <option value="xhosa">Xhosa</option>
                         <option value="afrikaans">Afrikaans</option>
                     </select>

@@ -1,19 +1,19 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import Home from './pages/MemberHome';
-import OrgHome from './pages/OrgHome';
-import CommunityPage from './pages/CommunityPage';
-import ViewReportPage from './pages/ViewReportPage';
-import Login from './pages/Login';
 import PrivateRoute from './components/PrivateRoute';
-import KnowledgeBasePage from './pages/KnowledgeBasePage';
-import SettingsPage from './pages/SettingsPage';
-
+const Home = lazy(() => import('./pages/MemberHome'));
+const OrgHome = lazy(() => import('./pages/OrgHome'));
+const CommunityPage = lazy(() => import('./pages/CommunityPage'));
+const ViewReportPage = lazy(() => import('./pages/ViewReportPage'));
+const Login = lazy(() => import('./pages/Login'));
+const KnowledgeBasePage = lazy(() => import('./pages/KnowledgeBasePage'));
+const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 
 function App() {
   const userType = localStorage.getItem('userType');
   return (
-      <Router>
+    <Router>
+      <Suspense fallback={<div>Loading...</div>}>
         <Routes>
           <Route path="/" element={<Navigate to="/login" />} />
           <Route path="/login" element={<Login />} />
@@ -66,7 +66,8 @@ function App() {
             }
           />
         </Routes>
-      </Router>
+      </Suspense>
+    </Router>
   );
 }
 

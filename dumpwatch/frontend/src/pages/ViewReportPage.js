@@ -103,6 +103,7 @@ const ViewReportPage = () => {
                     <div className="bg-white rounded-lg shadow-md mb-6">
                         {report.imageUrl && (
                             <img
+                                loading="lazy"
                                 src={`http://localhost:8080/${report.imageUrl}`}
                                 alt="Reported Post"
                                 className="w-full h-64 object-cover rounded-t-lg"

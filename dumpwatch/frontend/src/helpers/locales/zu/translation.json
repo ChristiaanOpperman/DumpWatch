@@ -58,6 +58,7 @@
         "sizeLabel": "Usayizi:",
         "descriptionLabel": "Incazelo:",
         "uploadPost": "Thumela Okuthunyelwe",
+        "success": "Impumelelo!",
         "loading": "Kulayishwa..."
     },
     "communityDropdown": {
@@ -86,7 +87,8 @@
         "noReports": "Ayikho imibiko etholakalayo.",
         "createdOn": "Kwakhiwe ngomhla:",
         "description": "Incazelo:",
-        "community": "Umphakathi:"
+        "community": "Umphakathi:",
+        "errorLoading" : "Iphutha lokulayisha ikhasi."
     },
     "orgHome": {
         "pageTitle": "Ulawulo",

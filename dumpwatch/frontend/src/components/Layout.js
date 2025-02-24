@@ -82,7 +82,7 @@ const Layout = ({ children, pageTitle }) => {
                     <div className="flex flex-col">
                         <div className="flex items-center space-x-2">
                             <h1 className="text-2xl font-bold">DumpWatch</h1>
-                            <img src="/mobile-logo.png" alt="DumpWatch Logo" className="h-8 w-8" />
+                            <img loading="lazy" src="/mobile-logo.png" alt="DumpWatch Logo" className="h-8 w-8" />
                         </div>
                         <p className="text-m text-gray-300">{t(pageTitle)}</p>
                     </div>

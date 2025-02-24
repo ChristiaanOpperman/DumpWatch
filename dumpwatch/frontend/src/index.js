@@ -13,13 +13,17 @@ root.render(
 );
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js').then(reg => {
+  navigator.serviceWorker.register('/sw.js')
+    .then(reg => {
       console.log('[Service Worker] Registered:', reg);
-  });
+    })
+    .catch(err => {
+      console.error('[Service Worker] Registration failed:', err);
+    });
 
   navigator.serviceWorker.addEventListener('message', (event) => {
-      if (event.data && event.data.type === 'offline-alert') {
-          alert('You are offline, but cached content is being served.');
-      }
+    if (event.data && event.data.type === 'offline-alert') {
+      alert('You are offline, but cached content is being served.');
+    }
   });
 }

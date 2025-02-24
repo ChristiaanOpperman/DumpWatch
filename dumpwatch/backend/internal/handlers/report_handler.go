@@ -56,8 +56,8 @@ func CreateReport(c *gin.Context) {
 
 	log.Printf("userId: %v, placeDetailId: %v, description: %v, filePath: %v", userId, placeDetailId, description, filePath)
 
-	query := `INSERT INTO Report (CreatedById, Description, PlaceDetailId, ImageURL) VALUES (?, ?, ?, ?)`
-	_, err = config.DB.Exec(query, userId, description, placeDetailId, filePath)
+	query := `INSERT INTO Report (CreatedById, Description, PlaceDetailId, ImageURL, Status) VALUES (?, ?, ?, ?, ?)`
+	_, err = config.DB.Exec(query, userId, description, placeDetailId, filePath, "Open")
 	if err != nil {
 		log.Printf("Database insert report error: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save post"})
@@ -68,6 +68,8 @@ func CreateReport(c *gin.Context) {
 }
 
 func GetAllReports(c *gin.Context) {
+	// print you've been hit
+	fmt.Println("Hit!")
 	if config.DB == nil {
 		log.Println("Database connection is nil")
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database connection error"})

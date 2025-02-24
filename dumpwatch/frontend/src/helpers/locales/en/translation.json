@@ -59,6 +59,7 @@
     "sizeLabel": "Size:",
     "descriptionLabel": "Description:",
     "uploadPost": "Upload Post",
+    "success": "Success!",
     "loading": "Loading..."
   },
   "communityDropdown": {
@@ -87,7 +88,8 @@
     "noReports": "No reports available.",
     "createdOn": "Created on:",
     "description": "Description:",
-    "community": "Community:"
+    "community": "Community:",
+    "errorLoading": "Failed to load reports"
   },
   "orgHome": {
     "pageTitle": "Administration",

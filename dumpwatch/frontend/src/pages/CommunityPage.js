@@ -49,12 +49,12 @@ const CommunityPage = () => {
 
                 {loading && <p className="text-center">{t('communityPage.loadingReports')}</p>}
                 {error && <p className="text-center text-red-500">{error}</p>}
-                {!loading && reports.length === 0 && (
+                {!loading && (!reports || reports.length === 0) && (
                     <p className="text-center text-gray-500">{t('communityPage.noReports')}</p>
                 )}
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
-                    {reports.map((report) => (
+                    {reports && reports.length > 0 && reports.map((report) => (
                         <div
                             key={report.reportId}
                             onClick={() => navigate(`/community/${report.reportId}`)}
@@ -62,6 +62,7 @@ const CommunityPage = () => {
                         >
                             {showImages && (
                                 <img
+                                    loading="lazy"
                                     src={`http://localhost:8080/${report.imageUrl}`}
                                     alt="Posted Illegal Dump"
                                     className="w-full h-48 object-cover"

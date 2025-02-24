@@ -3,14 +3,12 @@ import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import translationEN from './locales/en/translation.json';
 import translationZU from './locales/zu/translation.json';
-import translationSI from './locales/si/translation.json';
 import translationXH from './locales/xh/translation.json';
 import translationAF from './locales/af/translation.json';
 
 const resources = {
     english: { translation: translationEN },
     zulu: { translation: translationZU },
-    sipedi: { translation: translationSI },
     xhosa: { translation: translationXH },
     afrikaans: { translation: translationAF }
 };

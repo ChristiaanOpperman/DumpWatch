@@ -28,7 +28,7 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
     event.waitUntil(
-        caches.keys().then((cacheNames) => 
+        caches.keys().then((cacheNames) =>
             Promise.all(
                 cacheNames.map((cacheName) => {
                     if (cacheName !== CACHE_NAME && cacheName.startsWith('dumpwatch-cache-')) {
@@ -45,93 +45,56 @@ self.addEventListener('activate', (event) => {
     });
 });
 
-// self.addEventListener('fetch', (event) => {
-//     if (event.request.method !== 'GET') return;
-
-//     const url = new URL(event.request.url);
-
-//     if (url.pathname === '/sw.js') {
-//         return;
-//     }
-
-//     event.respondWith(
-//         caches.match(event.request).then((cachedResponse) => {
-//             if (cachedResponse) {
-//                 console.log('[Service Worker] Serving from cache:', event.request.url);
-//                 return cachedResponse;
-//             }
-
-//             return fetch(event.request).then((networkResponse) => {
-//                 if (!networkResponse || networkResponse.status !== 200 || networkResponse.headers.get('content-type')?.includes('text/html')) {
-//                     console.log('[Service Worker] Fetch failed, serving offline page');
-//                     return caches.match('/offline.html');
-//                 }
-
-//                 return caches.open(CACHE_NAME).then((cache) => {
-//                     if (url.pathname.startsWith('/uploads/') || url.pathname.startsWith('/get-reports') || url.pathname.startsWith('/get-comments-by-reportId')) {
-//                         cache.put(event.request, networkResponse.clone());
-//                     }
-//                     return networkResponse;
-//                 });
-//             }).catch(() => caches.match('/offline.html'));
-//         })
-//     );
-// });
-
 self.addEventListener('fetch', (event) => {
     if (event.request.method !== 'GET') return;
 
-    event.respondWith(
-        caches.match(event.request).then((cachedResponse) => {
-            if (cachedResponse) {
-                console.log('[Service Worker] Serving from cache:', event.request.url);
-
-                // Notify user that they are offline if needed
-                if (!navigator.onLine) {
-                    self.clients.matchAll().then(clients => {
-                        clients.forEach(client => {
-                            client.postMessage({ type: 'offline-alert' });
-                        });
-                    });
-                }
-
-                return cachedResponse;
-            }
-
-            return fetch(event.request).then((networkResponse) => {
-                return caches.open(CACHE_NAME).then((cache) => {
-                    if (event.request.url.includes('/uploads/') || event.request.url.includes('/get-reports') || event.request.url.includes('/get-comments-by-reportId')) {
-                        cache.put(event.request, networkResponse.clone());
-                    }
-                    return networkResponse;
-                });
-            }).catch(() => {
-                console.log('[Service Worker] Fetch failed, falling back to offline page.');
-                return caches.match('/offline.html');
-            });
-        })
-    );
-});
-
-
-self.addEventListener('fetch', (event) => {
+    // Check if request is for an image
     if (event.request.destination === 'image') {
         event.respondWith(
             caches.match(event.request).then((cachedResponse) => {
                 if (cachedResponse) return cachedResponse;
-
-                return fetch(event.request).then((networkResponse) => {
-                    return caches.open(CACHE_NAME).then((cache) => {
-                        cache.put(event.request, networkResponse.clone());
-                        return networkResponse;
-                    });
-                }).catch(() => caches.match('/offline.html'));
+                return fetch(event.request)
+                    .then((networkResponse) =>
+                        caches.open(CACHE_NAME).then((cache) => {
+                            cache.put(event.request, networkResponse.clone());
+                            return networkResponse;
+                        })
+                    )
+                    .catch(() => caches.match('/offline.html'));
             })
         );
         return;
     }
-});
 
+    // General caching strategy for other requests
+    // event.respondWith(
+    //     caches.match(event.request).then((cachedResponse) => {
+    //         if (cachedResponse) {
+    //             // Optionally notify user if offline
+    //             if (!navigator.onLine) {
+    //                 self.clients.matchAll().then(clients => {
+    //                     clients.forEach(client => client.postMessage({ type: 'offline-alert' }));
+    //                 });
+    //             }
+    //             return cachedResponse;
+    //         }
+
+    //         return fetch(event.request).then((networkResponse) =>
+    //             caches.open(CACHE_NAME).then((cache) => {
+    //                 // Cache certain API calls or dynamic content if needed
+    //                 if (
+    //                     event.request.url.includes('/uploads/') ||
+    //                     event.request.url.includes('/get-reports') ||
+    //                     event.request.url.includes('/get-comments-by-reportId')
+    //                 ) {
+    //                     cache.put(event.request, networkResponse.clone());
+    //                 }
+    //                 return networkResponse;
+    //             })
+    //         ).catch(() => caches.match('/offline.html'));
+    //     })
+    // );
+});
 
 self.addEventListener('push', (event) => {
     let data;

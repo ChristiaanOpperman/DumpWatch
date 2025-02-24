@@ -58,6 +58,7 @@
         "sizeLabel": "Grootte:",
         "descriptionLabel": "Beskrywing:",
         "uploadPost": "Laai Pos Op",
+        "success": "Sukses!",
         "loading": "Laai..."
     },
     "communityDropdown": {
@@ -86,7 +87,8 @@
         "noReports": "Geen verslae beskikbaar nie.",
         "createdOn": "Geskep op:",
         "description": "Beskrywing:",
-        "community": "Gemeenskap:"
+        "community": "Gemeenskap:",
+        "errorLoading": "Kon nie verslae laai nie"
     },
     "orgHome": {
         "pageTitle": "Administrasie",
