@@ -1,6 +1,6 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable no-restricted-globals */
-const CACHE_VERSION = 'v2'; // Update this when you make changes to your app
+const CACHE_VERSION = 'v3'; // Update this when you make changes to your app
 const CACHE_NAME = `dumpwatch-cache-${CACHE_VERSION}`;
 
 const FILES_TO_CACHE = [

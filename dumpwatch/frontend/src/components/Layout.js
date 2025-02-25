@@ -25,7 +25,7 @@ const Layout = ({ children, pageTitle }) => {
                 className={`fixed top-0 right-0 h-full bg-white w-64 z-50 transition-transform transform ${isDrawerOpen ? 'translate-x-0' : 'translate-x-full'
                     }`}
             >
-                <header className="bg-green-700 text-white p-6 flex justify-between items-center">
+                <header className="bg-green-700 text-white p-6 flex justify-between items-center h-20">
                     <div className="flex items-center space-x-4">
                         <h1 className="text-2xl font-bold">{t('layout.menu')}</h1>
                     </div>
@@ -78,7 +78,7 @@ const Layout = ({ children, pageTitle }) => {
             </div>
 
             <div className="flex flex-col min-h-screen bg-gray-200">
-                <header className="bg-green-700 text-white p-6 flex justify-between items-center">
+                <header className="bg-green-700 text-white p-6 flex justify-between items-center h-20">
                     <div className="flex flex-col">
                         <div className="flex items-center space-x-2">
                             <h1 className="text-2xl font-bold">DumpWatch</h1>
