@@ -60,7 +60,9 @@
     "descriptionLabel": "Description:",
     "uploadPost": "Upload Post",
     "success": "Success!",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "failure": "Error uploading post. Please try again.",
+    "error": "Error encountered. Please try again."
   },
   "communityDropdown": {
     "header": "Select Community",

@@ -59,7 +59,9 @@
         "descriptionLabel": "Incazelo:",
         "uploadPost": "Thumela Okuthunyelwe",
         "success": "Impumelelo!",
-        "loading": "Kulayishwa..."
+        "loading": "Kulayishwa...",
+        "failure": "Iphutha ekulayisheni okuthunyelwe. Sicela uzame futhi.",
+        "error": "Kuvele iphutha. Sicela uzame futhi."
     },
     "communityDropdown": {
         "header": "Khetha Umphakathi",
@@ -88,7 +90,7 @@
         "createdOn": "Kwakhiwe ngomhla:",
         "description": "Incazelo:",
         "community": "Umphakathi:",
-        "errorLoading" : "Iphutha lokulayisha ikhasi."
+        "errorLoading": "Iphutha lokulayisha ikhasi."
     },
     "orgHome": {
         "pageTitle": "Ulawulo",

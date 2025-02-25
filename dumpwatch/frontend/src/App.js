@@ -11,6 +11,7 @@ const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 
 function App() {
   const userType = localStorage.getItem('userType');
+  console.log('userType', userType);
   return (
     <Router>
       <Suspense fallback={<div>Loading...</div>}>
@@ -21,7 +22,15 @@ function App() {
             path="/home"
             element={
               <PrivateRoute>
-                {userType === 'Community Member' ? <Home /> : <OrgHome />}
+                <Home />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/org-home"
+            element={
+              <PrivateRoute>
+                <OrgHome />
               </PrivateRoute>
             }
           />

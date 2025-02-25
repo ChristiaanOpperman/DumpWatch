@@ -76,7 +76,9 @@
         "errorCouldNotFindDetails": "Ayifumananga iinkcukacha zendalo yakho.",
         "errorUnableToRetrieve": "Ayikwazi ukufumana indawo yakho. Nceda ufake ngezandla.",
         "errorGeolocationNotSupported": "Geolokasie ayixhaswa isiphequluli sakho.",
-        "loading": "Layisha..."
+        "loading": "Layisha...",
+        "failure": "Impazamo yokufaka iposti. Nceda uzame kwakhona.",
+        "error": "Kufunyenwe impazamo. Nceda uzame kwakhona."
     },
     "communityPage": {
         "pageTitle": "Umphakathi",
@@ -88,7 +90,7 @@
         "createdOn": "Idalwe ngomhla:",
         "description": "Inkcazelo:",
         "community": "Umphakathi:",
-        "errorLoading" : "Impazamo yokulayisha iphepha."
+        "errorLoading": "Impazamo yokulayisha iphepha."
     },
     "orgHome": {
         "pageTitle": "Ulawulo",

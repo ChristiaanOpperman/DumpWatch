@@ -67,6 +67,7 @@ const CreateReportForm = () => {
                     setIsRefreshing(false);
                 },
                 (error) => {
+                    console.log('Error getting location:', error);
                     setMessage(t('createReport.error'));
                     setIsRefreshing(false);
                 }
@@ -122,6 +123,7 @@ const CreateReportForm = () => {
     };
 
     const handleSubmit = async (event) => {
+        console.log('submitting')
         event.preventDefault();
         const reportData = {
             userId,
@@ -150,7 +152,8 @@ const CreateReportForm = () => {
             setFileSize('');
             if (imageInputRef.current) imageInputRef.current.value = '';
         } catch (error) {
-            setMessage(error.response?.data.error || t('createReport.failure'));
+            console.log('Error creating report:', error);
+            setMessage(t('createReport.failure'));
         }
     };
 
@@ -165,12 +168,14 @@ const CreateReportForm = () => {
                 )}
                 <div className="flex space-x-4">
                     <button
+                        type="button"
                         className={`py-2 px-4 rounded-lg ${locationMode === "community" ? "bg-green-700 text-white" : "bg-gray-300"}`}
                         onClick={() => setLocationMode("community")}
                     >
                         {t('createReport.inMyCommunity')}
                     </button>
                     <button
+                        type="button"
                         className={`py-2 px-4 rounded-lg ${locationMode === "current" ? "bg-green-700 text-white" : "bg-gray-300"}`}
                         onClick={() => {
                             setLocationMode("current");
@@ -180,6 +185,7 @@ const CreateReportForm = () => {
                         {t('createReport.useCurrentLocation')}
                     </button>
                     <button
+                        type="button"
                         className={`py-2 px-4 rounded-lg ${locationMode === "manual" ? "bg-green-700 text-white" : "bg-gray-300"}`}
                         onClick={() => {
                             setLocationMode("manual");
@@ -302,12 +308,13 @@ const CreateReportForm = () => {
                     <label className="block font-bold mb-1">{t('createReport.imageLabel')}</label>
                     <div className="relative">
                         <input
+                            name='image-upload'
                             ref={imageInputRef}
                             type="file"
                             accept="image/*"
                             onChange={handleFileChange}
                             className="hidden"
-                            required
+                            // required
                             aria-label="Report Image"
                             id="file-upload"
                         />

@@ -35,11 +35,7 @@ FinalProject
 │  │        └─ origin
 │  │           ├─ HEAD
 │  │           └─ main
-│  │  ├─ info
-│  │  └─ pack
-│  │     ├─ pack-690154706893eb39f80f6f85d89b3ae184c03b85.idx
-│  │     ├─ pack-690154706893eb39f80f6f85d89b3ae184c03b85.pack
-│  │     └─ pack-690154706893eb39f80f6f85d89b3ae184c03b85.rev
+│  ├─ objects
 │  ├─ packed-refs
 │  └─ refs
 │     ├─ heads
@@ -92,6 +88,7 @@ FinalProject
 │     ├─ cypress
 │     │  ├─ downloads
 │     │  ├─ e2e
+│     │  │  ├─ create-report.cy.js
 │     │  │  └─ navigation.cy.js
 │     │  ├─ fixtures
 │     │  │  └─ example.json
@@ -172,8 +169,6 @@ FinalProject
 │     │  │     ├─ af
 │     │  │     │  └─ translation.json
 │     │  │     ├─ en
-│     │  │     │  └─ translation.json
-│     │  │     ├─ si
 │     │  │     │  └─ translation.json
 │     │  │     ├─ xh
 │     │  │     │  └─ translation.json

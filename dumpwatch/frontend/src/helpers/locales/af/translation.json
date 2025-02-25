@@ -59,7 +59,9 @@
         "descriptionLabel": "Beskrywing:",
         "uploadPost": "Laai Pos Op",
         "success": "Sukses!",
-        "loading": "Laai..."
+        "loading": "Laai...",
+        "failure": "Fout met die oplaai van plasing. Probeer asseblief weer.",
+        "error": "Fout teëgekom. Probeer asseblief weer."
     },
     "communityDropdown": {
         "header": "Kies Gemeenskap",
