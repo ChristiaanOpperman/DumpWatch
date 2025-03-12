@@ -166,7 +166,7 @@ const CommunityDropdown = ({ onSelectCommunity }) => {
                             {useCurrentLocation ? t('communityDropdown.useCurrentLocation') : t('communityDropdown.manuallyEnterAddress')}
                         </label>
                     </div>
-                    {useCurrentLocation && longitude && latitude ? (
+                    {useCurrentLocation ? (
                         <>
                             <div>
                                 <label className="block font-bold mb-5">{t('communityDropdown.placesNearYou')}</label>

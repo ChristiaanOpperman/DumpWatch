@@ -170,6 +170,9 @@ const ViewReportPage = () => {
                             <p className="text-sm text-gray-600 mb-2">
                                 {t('viewReport.createdOnLabel')} {new Date(report.createdDate).toLocaleDateString()}
                             </p>
+                            <p className="text-sm text-gray-600 mb-2">
+                                 {t('viewReport.statusLabel')} {report.status}
+                             </p>
                             <p className="text-sm text-gray-600">{report.place.placeName}</p>
                         </div>
                     </div>
