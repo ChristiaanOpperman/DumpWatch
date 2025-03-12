@@ -67,6 +67,38 @@ func CreateReport(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": "Report created successfully"})
 }
 
+func SetReportStatus(c *gin.Context) {
+
+	var request struct {
+		ReportId interface{} `json:"ReportId"`
+		Status   string      `json:"Status"`
+	}
+
+	// Bind JSON and check for errors
+	if err := c.ShouldBindJSON(&request); err != nil {
+		log.Printf("JSON Binding Error: %v", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+		return
+	}
+
+	query := `UPDATE Report SET Status = ?, LastModifiedDate = NOW() WHERE ReportId = ?`
+	result, err := config.DB.Exec(query, request.Status, request.ReportId)
+	if err != nil {
+		log.Printf("Error updating report status: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update report status"})
+		return
+	}
+
+	rowsAffected, _ := result.RowsAffected()
+	if rowsAffected == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Report not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Report status updated successfully", "status": request.Status})
+}
+
+
 func GetAllReports(c *gin.Context) {
 	// print you've been hit
 	fmt.Println("Hit!")

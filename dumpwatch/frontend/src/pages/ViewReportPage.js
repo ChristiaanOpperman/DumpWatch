@@ -14,12 +14,32 @@ const ViewReportPage = () => {
     const [error, setError] = useState(null);
     const [commentInput, setCommentInput] = useState('');
     const [posting, setPosting] = useState(false);
+    const [status, setStatus] = useState();
+    const [toastMessage, setToastMessage] = useState();
+    const userType = localStorage.getItem('userType');
+
     const userId = localStorage.getItem('userId');
+
+    useEffect(() => {
+        const fetchData = async () => {
+            setLoading(true);
+            await Promise.all([fetchReport(), fetchComments()]);
+            setLoading(false);
+        };
+        fetchData();
+    }, [reportId]);
+
+     useEffect(() => {
+        setTimeout(()=>{
+            setToastMessage(undefined)
+        }, 2000)
+    }, [toastMessage]);
 
     const fetchReport = async () => {
         try {
             const response = await axios.get(`/get-report-by-reportId/${reportId}`);
             setReport(response.data);
+            setStatus(response.data.status)
         } catch (err) {
             setError(t('viewReport.error') || "Failed to load report details");
         }
@@ -67,14 +87,28 @@ const ViewReportPage = () => {
         }
     };
 
-    useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            await Promise.all([fetchReport(), fetchComments()]);
-            setLoading(false);
-        };
-        fetchData();
-    }, [reportId]);
+    const updateReportStatus = async (status) => {
+        try {
+            console.log('status: ',status )
+            console.log('report id: ', reportId)
+            const response = await axios.put('/set-report-status', {
+                ReportId: reportId,
+                Status: status
+            });
+    
+            if (response.data) {
+                setStatus(response.data.status);
+                fetchReport(); 
+                setToastMessage('Successfully updated report status!');
+            } else {
+                setToastMessage('Failed in updating report status!');
+                console.log('Error in setting post status: ', status);
+            }
+        } catch (e) {
+            setToastMessage('Failed in updating report status!');
+            console.log('Error in setting post status: ', status);
+        }
+    };
 
     if (loading) {
         return (
@@ -108,6 +142,27 @@ const ViewReportPage = () => {
                                 alt="Reported Post"
                                 className="w-full h-64 object-cover rounded-t-lg"
                             />
+                        )}
+                        {toastMessage && (
+                            <div className={`p-4 rounded-md ${toastMessage.includes(t('Successfully')) ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                {toastMessage}
+                            </div>
+                        )}
+                        {userType === "Organisation" && (
+                            <div className="mb-2">
+                                <div className="relative inline-block w-full">
+                                    <select
+                                        value={status}
+                                        onChange={(e) => {
+                                            updateReportStatus(e.target.value)
+                                        }}
+                                        className={`w-auto m-2 p-3 border rounded-lg font-semibold text-center focus:outline-none focus:ring-2 focus:ring-green-500 ${status === "Open" ? "bg-blue-200 text-blue-800" : status === "Scheduled" ? "bg-green-200 text-green-800" : "bg-green-600 text-white"}`}>
+                                        <option value="Open" className="bg-blue-200 text-blue-800">Open</option>
+                                        <option value="Scheduled" className="bg-green-200 text-green-800">Scheduled</option>
+                                        <option value="Resolved" className="bg-green-600 text-white">Resolved</option>
+                                    </select>
+                                </div>
+                            </div>
                         )}
                         <div className="p-6">
                             <h1 className="text-2xl font-bold mb-4">{t('viewReport.reportDetailsHeader')}</h1>

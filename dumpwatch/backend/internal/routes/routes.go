@@ -9,6 +9,7 @@ import (
 func RegisterRoutes(router *gin.Engine) {
 	// Report routes
 	router.POST("/create-report", handlers.CreateReport)
+	router.PUT("/set-report-status", handlers.SetReportStatus)
 	router.GET("/get-reports", handlers.GetAllReports)
 	router.GET("/get-report-by-reportId/:reportId", handlers.GetReportById)
 	router.GET("/get-reports-by-place-details-id/:placeDetailsId", handlers.GetReportsByPlaceDetailsId)
