@@ -27,7 +27,12 @@
         "postingButton": "Iyathunyelwa...",
         "commentsHeader": "Iingxelo",
         "createdByLabel": "Idalwe ngu:",
-        "noComments": "Azikho iingxelo ezongezwe okwamanje."
+        "noComments": "Azikho iingxelo ezongezwe okwamanje.",
+        "failedStatus": "Ukulungisa imeko yengxelo akuphumelelanga!",
+        "successStatus": "Imeko yengxelo igqityiwe ngempumelelo!",
+        "statusOpen": "Vulekileyo",
+        "statusScheduled": "Icwangcisiwe",
+        "statusResolved": "Isonjululwe"
     },
     "home": {
         "pageTitle": "Bika Ukulahleka Kwamadoti",

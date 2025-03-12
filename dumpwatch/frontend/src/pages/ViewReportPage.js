@@ -89,8 +89,6 @@ const ViewReportPage = () => {
 
     const updateReportStatus = async (status) => {
         try {
-            console.log('status: ',status )
-            console.log('report id: ', reportId)
             const response = await axios.put('/set-report-status', {
                 ReportId: reportId,
                 Status: status
@@ -99,14 +97,14 @@ const ViewReportPage = () => {
             if (response.data) {
                 setStatus(response.data.status);
                 fetchReport(); 
-                setToastMessage('Successfully updated report status!');
+                setToastMessage(t('viewReport.successStatus'));
             } else {
-                setToastMessage('Failed in updating report status!');
-                console.log('Error in setting post status: ', status);
+                setToastMessage(t('viewReport.successFail'));
+                console.log('Error in setting post status: ', response);
             }
         } catch (e) {
             setToastMessage('Failed in updating report status!');
-            console.log('Error in setting post status: ', status);
+            console.log('Error in setting post status: ', e);
         }
     };
 
@@ -144,7 +142,7 @@ const ViewReportPage = () => {
                             />
                         )}
                         {toastMessage && (
-                            <div className={`p-4 rounded-md ${toastMessage.includes(t('Successfully')) ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                            <div className={`p-4 rounded-md ${toastMessage.includes(t('viewReport.successStatus')) ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                                 {toastMessage}
                             </div>
                         )}
@@ -156,10 +154,10 @@ const ViewReportPage = () => {
                                         onChange={(e) => {
                                             updateReportStatus(e.target.value)
                                         }}
-                                        className={`w-auto m-2 p-3 border rounded-lg font-semibold text-center focus:outline-none focus:ring-2 focus:ring-green-500 ${status === "Open" ? "bg-blue-200 text-blue-800" : status === "Scheduled" ? "bg-green-200 text-green-800" : "bg-green-600 text-white"}`}>
-                                        <option value="Open" className="bg-blue-200 text-blue-800">Open</option>
-                                        <option value="Scheduled" className="bg-green-200 text-green-800">Scheduled</option>
-                                        <option value="Resolved" className="bg-green-600 text-white">Resolved</option>
+                                        className={`w-auto m-2 p-3 border rounded-lg font-semibold text-center focus:outline-none focus:ring-2 focus:ring-green-500 ${status === 'Open' ? "bg-blue-200 text-blue-800" : status === 'Scheduled' ? "bg-green-200 text-green-800" : "bg-green-600 text-white"}`}>
+                                        <option value="Open" className="bg-blue-200 text-blue-800">{t('viewReport.statusOpen')}</option>
+                                        <option value="Scheduled" className="bg-green-200 text-green-800">{t('viewReport.statusScheduled')}</option>
+                                        <option value="Resolved" className="bg-green-600 text-white">{t('viewReport.statusResolved')}</option>
                                     </select>
                                 </div>
                             </div>
@@ -171,9 +169,6 @@ const ViewReportPage = () => {
                             </p>
                             <p className="text-sm text-gray-600 mb-2">
                                 {t('viewReport.createdOnLabel')} {new Date(report.createdDate).toLocaleDateString()}
-                            </p>
-                            <p className="text-sm text-gray-600 mb-2">
-                                {t('viewReport.statusLabel')} {report.status}
                             </p>
                             <p className="text-sm text-gray-600">{report.place.placeName}</p>
                         </div>

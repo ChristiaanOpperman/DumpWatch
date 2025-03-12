@@ -27,7 +27,12 @@
         "postingButton": "Besig om te plaas...",
         "commentsHeader": "Kommentaar",
         "createdByLabel": "Geskep deur:",
-        "noComments": "Geen kommentaar bygevoeg nie."
+        "noComments": "Geen kommentaar bygevoeg nie.",
+        "failedStatus": "Kon nie rapportstatus opdateer nie!",
+        "successStatus": "Rapportstatus suksesvol opgedateer!",
+        "statusOpen": "Oop",
+        "statusScheduled": "Geskeduleer",
+        "statusResolved": "Opgelos"
     },
     "home": {
         "pageTitle": "Rapporteer Onwettige Afval",

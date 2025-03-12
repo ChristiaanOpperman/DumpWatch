@@ -28,7 +28,12 @@
     "postingButton": "Posting...",
     "commentsHeader": "Comments",
     "createdByLabel": "Created by:",
-    "noComments": "No comments have been added yet."
+    "noComments": "No comments have been added yet.",
+    "failedStatus": "Failed in updating report status!",
+    "successStatus": "Successfully updated report status!",
+    "statusOpen": "Open",
+    "statusScheduled": "Scheduled",
+    "statusResolved": "Resolved"
   },
   "home": {
     "pageTitle": "Report Illegal Dumping",

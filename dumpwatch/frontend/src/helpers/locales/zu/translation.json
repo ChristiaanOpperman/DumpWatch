@@ -27,7 +27,12 @@
         "postingButton": "Kuthunyelwa...",
         "commentsHeader": "Iziphendulo",
         "createdByLabel": "Idaliwe ngu:",
-        "noComments": "Azikho izimpendulo ezingeziwe okwamanje."
+        "noComments": "Azikho izimpendulo ezingeziwe okwamanje.",
+        "failedStatus": "Ukubuyekeza isimo sombiko kuhlulekile!",
+        "successStatus": "Isimo sombiko sibuyekeziwe ngempumelelo!",
+        "statusOpen": "Vulekile",
+        "statusScheduled": "Ihleliwe",
+        "statusResolved": "Ixazululiwe"
     },
     "home": {
         "pageTitle": "Bika Ukulahleka Kwamadoti",
