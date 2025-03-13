@@ -20,6 +20,17 @@ go run main.go
 - Create the local database - dumpwatch - by running the sql file init.sql found in dumpwatch/backend/db
 - Populate the Places table with South African places in the dumpwatch database by running the Python script places.py found in dumpwatch/backend/db/scripts
 
+### Environment file required
+#### Details in the environment file on the backend are:
+- DB_USER=your-username
+- DB_PASS=your-password
+- DB_HOST=127.0.0.1 - add your host ip here
+- DB_PORT=0000 - add your port here
+- DB_NAME=dumpwatch
+
+#### Details in the environment file on the backend AND frontend are:
+JWT_SECRET='some-secret' - add your secret token here
+
 # Project Tree
 ```
 FinalProject
