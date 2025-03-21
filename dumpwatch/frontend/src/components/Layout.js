@@ -41,7 +41,7 @@ const Layout = ({ children, pageTitle }) => {
                 <nav className="p-4 space-y-4">
                     <Link
                         to={userType === 'Community Member' ? '/home' : '/org-home'}
-                        className={`block text-lg font-bold ${window.location.pathname === '/home' ? 'text-green-700' : 'text-gray-500'
+                        className={`block text-lg font-bold ${window.location.pathname === '/home' || window.location.pathname === '/org-home' ? 'text-green-700' : 'text-gray-500'
                             }`}
                     >
                         {userType === 'Community Member' ? t('layout.report') : t('layout.administration')}

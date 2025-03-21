@@ -77,7 +77,7 @@ const Login = () => {
                     localStorage.setItem('token', result.token);
                     localStorage.setItem('userId', result.userId);
                     localStorage.setItem('userType', result.userType);
-                    navigate('/home');
+                    navigate(result.userType === 'Community Member'? '/home' : '/org-home');
                 } else {
                     alert('Registration successful! You can now log in.');
                     setIsRegister(false);

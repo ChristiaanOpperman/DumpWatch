@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-expressions */
 /* global cy */
-/* global Cypress */
+
 describe('Create Report', () => {
     beforeEach(() => {
         cy.loginByAuth();
